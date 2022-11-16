@@ -2,8 +2,8 @@
 import { store } from '../store.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
-library.add(faUserSecret)
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
+library.add(faMagnifyingGlass)
 export default {
     name: 'AppHeader',
     components: {
@@ -36,7 +36,7 @@ export default {
                 <input type="search" name="searchBar" id="searchBar" class="form-control" v-model="store.queryString"
                     @keyup.enter="getCurrentMoviesAndShows">
                 <button type="submit" class="btn btn-primary" @click="getCurrentMoviesAndShows">
-                    <font-awesome-icon icon="fa-solid fa-user-secret"></font-awesome-icon>
+                    <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
                 </button>
             </div>
         </div>

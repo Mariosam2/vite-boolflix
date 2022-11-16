@@ -13,8 +13,11 @@ export default {
 <template>
     <main id="site_main">
         <div class="container">
+            <!-- Movies e Shows saranno due componenti con dentro un altro componente (movie e show) -->
             <section class="movies">
-                <div class="row row-cols-5 g-3">
+                <h2 v-if="!store.loading && (store.currentMovies === null || store.currentMovies.length !== 0)" class="
+                    title">Movies</h2>
+                <div class="row my-3 row-cols-5 g-3">
                     <div class="col" v-for="movie in store.currentMovies">
                         <div class="movie">
                             <div class="movie-title">{{ movie.title }}</div>
@@ -25,19 +28,26 @@ export default {
                                 <img v-else-if="movie.original_language == 'ja'" src="../assets/img/jp.png" alt="us" />
                                 <div class="fw-bold text-uppercase" v-else>{{ movie.original_language }}</div>
                             </div>
-                            <div class="vote-count">{{ movie.vote_count }}</div>
+                            <div class="vote-count">{{ movie.vote_average }}</div>
                         </div>
                     </div>
                 </div>
             </section>
             <section class="tv-shows">
-                <div class="row row-cols-5 g-3">
+                <h2 v-if="!store.loading && (store.currentShows === null || store.currentShows.length !== 0)"
+                    class="title">Tv-Series</h2>
+                <div class="row my-3 row-cols-5 g-3">
                     <div class="col" v-for="show in store.currentShows">
                         <div class="show">
-                            <div class="show-title">{{ show.title }}</div>
-                            <div class="original-title">{{ show.original_title }}</div>
-
-                            <div class="vote-count">{{ show.vote_count }}</div>
+                            <div class="show-name">{{ show.name }}</div>
+                            <div class="original-name">{{ show.original_name }}</div>
+                            <div class="language">
+                                <img v-if="show.original_language == 'en'" src="../assets/img/us.png" alt="us" />
+                                <img v-else-if="show.original_language == 'es'" src="../assets/img/es.png" alt="us" />
+                                <img v-else-if="show.original_language == 'ja'" src="../assets/img/jp.png" alt="us" />
+                                <div class="fw-bold text-uppercase" v-else>{{ show.original_language }}</div>
+                            </div>
+                            <div class="vote-count">{{ show.vote_average }}</div>
                         </div>
                     </div>
                 </div>
@@ -48,7 +58,8 @@ export default {
 </template>
 
 <style lang="scss">
-.movie {
+.movie,
+.show {
     background-color: #ededed;
     height: 100%;
 
@@ -59,6 +70,12 @@ export default {
             object-fit: cover;
         }
     }
+}
+
+.title {
+
+    text-transform: uppercase;
+    font-weight: bold;
 }
 </style>
 
