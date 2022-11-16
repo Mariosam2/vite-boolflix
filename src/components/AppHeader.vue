@@ -15,8 +15,14 @@ export default {
         }
     },
     methods: {
-        getCurrentMovies() {
-            this.store.callApi(this.store.API_URL);
+        getCurrentMoviesAndShows() {
+            if (this.store.queryString !== '') {
+                this.store.callApi('movie');
+                this.store.callApi('tv');
+
+
+            }
+
         }
     }
 }
@@ -28,8 +34,8 @@ export default {
             <h1 class="text-uppercase">Boolflix</h1>
             <div class="search d-flex align-items-center">
                 <input type="search" name="searchBar" id="searchBar" class="form-control" v-model="store.queryString"
-                    @keyup.enter="getCurrentMovies">
-                <button type="submit" class="btn btn-primary" @click="getCurrentMovies">
+                    @keyup.enter="getCurrentMoviesAndShows">
+                <button type="submit" class="btn btn-primary" @click="getCurrentMoviesAndShows">
                     <font-awesome-icon icon="fa-solid fa-user-secret"></font-awesome-icon>
                 </button>
             </div>
