@@ -24,13 +24,15 @@ export let store = reactive({
                 //console.log((resp.data));
                 if (key === 'movie') {
                     this.currentMovies = resp.data.results;
+                    console.log(resp.data)
                     //console.log(resp.data.results)
                     //console.log(this.currentMovies)
                 } else {
                     this.currentShows = resp.data.results;
-                    //console.log(resp.data.results)
+                    console.log(resp.data.results)
                     //console.log(this.currentShows)
                 }
+                this.queryString = '';
 
 
             })

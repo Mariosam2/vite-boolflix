@@ -1,7 +1,11 @@
 <script>
 import { store } from '../store.js'
+import MoviesList from './MoviesList.vue';
 export default {
     name: 'AppMain',
+    components: {
+        MoviesList
+    },
     data() {
         return {
             store,
@@ -14,28 +18,9 @@ export default {
     <main id="site_main">
         <div class="container">
             <!-- Movies e Shows saranno due componenti con dentro un altro componente (movie e show) -->
-            <section class="movies">
-                <h2 v-if="!store.loading && (store.currentMovies === null || store.currentMovies.length !== 0)" class="
-                    title">Movies</h2>
-                <div class="row my-3 row-cols-5 g-3">
-                    <div class="col" v-for="movie in store.currentMovies">
-                        <div class="movie">
-                            <div class="movie-title">{{ movie.title }}</div>
-                            <div class="original-title">{{ movie.original_title }}</div>
-                            <div class="language">
-                                <img v-if="movie.original_language == 'en'" src="../assets/img/us.png" alt="us" />
-                                <img v-else-if="movie.original_language == 'es'" src="../assets/img/es.png" alt="us" />
-                                <img v-else-if="movie.original_language == 'ja'" src="../assets/img/jp.png" alt="us" />
-                                <div class="fw-bold text-uppercase" v-else>{{ movie.original_language }}</div>
-                            </div>
-                            <div class="vote-count">{{ movie.vote_average }}</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <section class="tv-shows">
-                <h2 v-if="!store.loading && (store.currentShows === null || store.currentShows.length !== 0)"
-                    class="title">Tv-Series</h2>
+            <movies-list></movies-list>
+            <section class="tv-shows" v-if="store.currentShows && store.currentShows.length !== 0">
+                <h2 class="title">Tv-Series</h2>
                 <div class="row my-3 row-cols-5 g-3">
                     <div class="col" v-for="show in store.currentShows">
                         <div class="show">
