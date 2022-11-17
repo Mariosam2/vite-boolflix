@@ -1,11 +1,11 @@
 <script>
 import { store } from '../store.js'
-import MoviesList from './MoviesList.vue';
-import ShowsList from './ShowsList.vue';
+import CardsList from './CardsList.vue';
+
 export default {
     name: 'AppMain',
     components: {
-        MoviesList, ShowsList
+        CardsList,
     },
     data() {
         return {
@@ -18,15 +18,15 @@ export default {
 <template>
     <main id="site_main">
         <div class="container">
-            <movies-list></movies-list>
-            <shows-list></shows-list>
+            <cards-list :list="store.currentMovies"></cards-list>
+            <cards-list :list="store.currentShows"></cards-list>
+
         </div>
     </main>
 </template>
 
 <style lang="scss">
-.movie,
-.show {
+.ms_card {
     position: relative;
 
     &:hover .content {

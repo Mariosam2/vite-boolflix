@@ -1,10 +1,13 @@
 <script>
 import { store } from '../store.js';
-import MovieItem from './MovieItem.vue';
+import CardItem from './CardItem.vue';
 export default {
     name: 'MoviesList',
+    props: {
+        list: Array,
+    },
     components: {
-        MovieItem
+        CardItem
     },
     data() {
         return {
@@ -16,10 +19,10 @@ export default {
 </script>
 
 <template>
-    <section class="movies" v-if="store.currentMovies && store.currentMovies.length !== 0">
-        <h2 class="title">Movies</h2>
+    <section class="cards-list" v-if="list && list.length !== 0">
+        <h2 class="title">Prova</h2>
         <div class="row my-3 row-cols-5 g-4">
-            <movie-item v-for="movie in store.currentMovies" :movie="movie"></movie-item>
+            <card-item v-for="card in list" :card="card"></card-item>
         </div>
     </section>
 </template>
