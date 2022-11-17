@@ -41,9 +41,17 @@ export default {
     object-position: center;
 }
 
-.content {
+.content,
+.content.show {
     overflow: auto;
     background-color: #ededed;
+}
+
+.content.show {
+    opacity: 1;
+}
+
+.content {
     position: absolute;
     top: 0;
     left: 0;
@@ -51,7 +59,6 @@ export default {
     height: 100%;
     opacity: 0;
     transition: opacity 0.2s ease;
-    ;
 
 
     .language {

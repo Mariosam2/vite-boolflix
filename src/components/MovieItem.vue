@@ -11,8 +11,9 @@ export default {
 
 <template>
     <div class="col movie">
-        <img class="img-fluid cover" :src="'https://image.tmdb.org/t/p/w780/' + movie.backdrop_path" alt="" />
-        <div class="content ">
+        <img v-if="movie.backdrop_path !== null" class="img-fluid cover"
+            :src="'https://image.tmdb.org/t/p/w780/' + movie.backdrop_path" alt="" />
+        <div class="content" :class="movie.backdrop_path === null ? 'show' : ''">
             <div class="movie-title">{{ movie.title }}</div>
             <div class="original-title">{{ movie.original_title }}</div>
             <div class="language">
