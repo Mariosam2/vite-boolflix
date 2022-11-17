@@ -17,7 +17,7 @@ export default {
 
 <template>
     <main id="site_main">
-        <div class="container">
+        <div class="container-xl px-5 px-md-2 px-xl-0 pb-3 d-flex flex-wrap align-items-center">
             <cards-list :list="store.currentMovies"></cards-list>
             <cards-list :list="store.currentShows"></cards-list>
 
@@ -26,8 +26,30 @@ export default {
 </template>
 
 <style lang="scss">
+@use '../assets/scss/partials/variables' as *;
+
+.cards-list {
+    width: 100%;
+}
+
+.row {
+    /* scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch; */
+    overflow-x: auto;
+}
+
+.col {
+    margin-bottom: 0.5rem;
+}
+
+/* .col {
+    scroll-snap-align: start;
+} */
+
+
 .ms_card {
     position: relative;
+    height: 100%;
 
     &:hover .content {
         opacity: 1;
@@ -38,13 +60,21 @@ export default {
 .cover {
     aspect-ratio: 2/3;
     object-fit: cover;
-    object-position: center;
+    object-position: 25% 50%;
 }
+
+
 
 .content,
 .content.show {
-    overflow: auto;
-    background-color: #ededed;
+    color: $almost-white;
+    overflow-y: auto;
+    background-color: $dark;
+    padding: 1rem;
+
+    >* {
+        margin-top: 0.5rem;
+    }
 }
 
 .content.show {
@@ -71,9 +101,11 @@ export default {
 }
 
 .title {
-
+    color: $almost-white;
     text-transform: uppercase;
     font-weight: bold;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
 }
 </style>
 
