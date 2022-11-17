@@ -10,8 +10,9 @@ export default {
 </script>
 
 <template>
-    <div class="col">
-        <div class="movie">
+    <div class="col movie">
+        <img class="img-fluid cover" :src="'https://image.tmdb.org/t/p/w780/' + movie.backdrop_path" alt="" />
+        <div class="content ">
             <div class="movie-title">{{ movie.title }}</div>
             <div class="original-title">{{ movie.original_title }}</div>
             <div class="language">
@@ -24,3 +25,5 @@ export default {
         </div>
     </div>
 </template>
+
+

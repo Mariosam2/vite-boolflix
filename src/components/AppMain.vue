@@ -1,10 +1,11 @@
 <script>
 import { store } from '../store.js'
 import MoviesList from './MoviesList.vue';
+import ShowsList from './ShowsList.vue';
 export default {
     name: 'AppMain',
     components: {
-        MoviesList
+        MoviesList, ShowsList
     },
     data() {
         return {
@@ -17,27 +18,8 @@ export default {
 <template>
     <main id="site_main">
         <div class="container">
-            <!-- Movies e Shows saranno due componenti con dentro un altro componente (movie e show) -->
             <movies-list></movies-list>
-            <section class="tv-shows" v-if="store.currentShows && store.currentShows.length !== 0">
-                <h2 class="title">Tv-Series</h2>
-                <div class="row my-3 row-cols-5 g-3">
-                    <div class="col" v-for="show in store.currentShows">
-                        <div class="show">
-                            <div class="show-name">{{ show.name }}</div>
-                            <div class="original-name">{{ show.original_name }}</div>
-                            <div class="language">
-                                <img v-if="show.original_language == 'en'" src="../assets/img/us.png" alt="us" />
-                                <img v-else-if="show.original_language == 'es'" src="../assets/img/es.png" alt="us" />
-                                <img v-else-if="show.original_language == 'ja'" src="../assets/img/jp.png" alt="us" />
-                                <div class="fw-bold text-uppercase" v-else>{{ show.original_language }}</div>
-                            </div>
-                            <div class="vote-count">{{ show.vote_average }}</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
+            <shows-list></shows-list>
         </div>
     </main>
 </template>
@@ -45,8 +27,32 @@ export default {
 <style lang="scss">
 .movie,
 .show {
+    position: relative;
+
+    &:hover .content {
+        opacity: 1;
+    }
+
+}
+
+.cover {
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    object-position: center;
+}
+
+.content {
+    overflow: auto;
     background-color: #ededed;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
     height: 100%;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    ;
+
 
     .language {
         img {
