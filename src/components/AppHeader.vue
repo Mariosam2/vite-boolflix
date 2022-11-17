@@ -30,7 +30,7 @@ export default {
 
 <template>
     <header id="site_header" class="my-4">
-        <div class="container-xl px-3 d-flex justify-content-between align-items-center">
+        <div class="container-xl px-5 px-md-3 px-xl-0 d-flex justify-content-between align-items-center">
             <div class="logo"><img class="img-fluid"
                     src="https://image.tmdb.org/t/p/w342/wwemzKWzjKYJFfCeiB57q3r4Bcm.png" alt="logo" /></div>
 

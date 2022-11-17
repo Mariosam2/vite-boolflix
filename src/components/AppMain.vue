@@ -17,7 +17,7 @@ export default {
 
 <template>
     <main id="site_main">
-        <div class="container-xl px-5 px-md-2 px-xl-0 pb-3 d-flex flex-wrap align-items-center">
+        <div class="container-xl px-5 px-md-3 px-xl-0 pb-3 d-flex flex-wrap align-items-center">
             <cards-list :list="store.currentMovies"></cards-list>
             <cards-list :list="store.currentShows"></cards-list>
 
@@ -60,7 +60,7 @@ export default {
 .cover {
     aspect-ratio: 2/3;
     object-fit: cover;
-    object-position: 25% 50%;
+    object-position: 50% 50%;
 }
 
 
