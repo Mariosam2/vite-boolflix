@@ -40,6 +40,7 @@ export default {
 
 .ms_card {
     position: relative;
+    aspect-ratio: 2/3;
     height: 100%;
 
     &:hover .content {
@@ -49,7 +50,7 @@ export default {
 }
 
 .cover {
-    aspect-ratio: 2/3;
+    height: 100%;
     object-fit: cover;
     object-position: 50% 50%;
 }
