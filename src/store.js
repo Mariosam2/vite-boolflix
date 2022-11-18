@@ -6,8 +6,10 @@ export let store = reactive({
     API_KEY: '8223b7e6f75caa7d554c0aa366a0c2e3',
     API_URL: 'https://api.themoviedb.org/3/search/',
     queryString: '',
-    currentMovies: null,
-    currentShows: null,
+    results: {
+        currentMovies: null,
+        currentShows: null,
+    },
     callApi(key) {
         const config = {
             method: 'get',
@@ -23,13 +25,13 @@ export let store = reactive({
                 this.loading = false;
                 //console.log((resp.data));
                 if (key === 'movie') {
-                    this.currentMovies = resp.data.results;
-                    console.log(resp.data)
+                    this.results.currentMovies = resp.data;
+                    //console.log(resp.data)
                     //console.log(resp.data.results)
                     //console.log(this.currentMovies)
                 } else {
-                    this.currentShows = resp.data.results;
-                    console.log(resp.data.results)
+                    this.results.currentShows = resp.data;
+                    //console.log(resp.data.results)
                     //console.log(this.currentShows)
                 }
                 this.queryString = '';
