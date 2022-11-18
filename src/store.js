@@ -1,6 +1,8 @@
 import { reactive } from "vue";
 import axios from 'axios';
 export let store = reactive({
+    leftBound: true,
+    rightBound: false,
     activeMoviesPage: 1,
     activeShowsPage: 1,
     loading: true,
