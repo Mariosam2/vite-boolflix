@@ -1,25 +1,34 @@
 <script>
 import { store } from '../store.js'
 import CardsList from './CardsList.vue';
-
+import CardsHorizontal from './CardsHorizontal.vue';
 export default {
     name: 'AppMain',
     components: {
-        CardsList,
+        CardsList, CardsHorizontal
     },
     data() {
         return {
             store,
         }
+    },
+    mounted() {
+        this.store.callApi('getAll')
     }
 }
 </script>
 
 <template>
-    <main id="site_main">
+    <main id="site_main" v-if="!store.loading">
         <div class="container-xl px-5 px-md-3 px-xl-0 pb-3 d-flex flex-wrap align-items-center ms_container"
-            v-if="store.results.movies !== null && store.results.shows !== null">
-            <cards-list v-for="(data, key) in store.results" :list="data" :title="key"></cards-list>
+            v-if="(store.resultsGet.popular && store.resultsGet.trending) && !store.searching">
+            <cards-horizontal v-for="(data, key) in store.resultsGet" :list="data" :title="key">
+            </cards-horizontal>
+        </div>
+        <div class="container-xl px-5 px-md-3 px-xl-0 pb-3 d-flex flex-wrap align-items-center ms_container"
+            v-if="(store.resultsSearch.movies && store.resultsSearch.shows) && store.searching">
+            <cards-list v-for="(data, key) in store.resultsSearch" :list="data" :title="key">
+            </cards-list>
 
         </div>
     </main>

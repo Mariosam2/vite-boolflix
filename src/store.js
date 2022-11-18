@@ -2,6 +2,7 @@ import { reactive } from "vue";
 import axios from 'axios';
 export let store = reactive({
     languages: ['en', 'es', 'jp'],
+    searching: false,
     leftBound: true,
     rightBound: false,
     activeMoviesPage: 1,
@@ -12,60 +13,96 @@ export let store = reactive({
     API_URL: 'https://api.themoviedb.org/3/',
     currentQuery: '',
     queryString: '',
-    results: {
+    resultsGet: {
+        trending: null,
+        popular: null,
+    },
+    resultsSearch: {
         movies: null,
         shows: null,
+
     },
     // ho reimplementato la chiamata perchè mi torna più comoda nell'organizzazione delle richieste (per prendere i film e le serie tv con get treding)
-    searchMovies() {
-        if (this.queryString !== '') {
-            this.currentQuery = this.queryString;
+    searchMovies(isSearching) {
+        if (isSearching) {
+            if (this.queryString !== '') {
+                this.currentQuery = this.queryString;
+            }
+            const config = {
+                method: 'get',
+                url: this.API_URL + 'search/movie',
+                params: {
+                    api_key: this.API_KEY,
+                    query: this.currentQuery,
+                    page: this.activeMoviesPage
+                }
+            }
+            //console.log(config)
+            return axios(config);
         }
+
+    },
+    searchTvShows(isSearching) {
+        if (isSearching) {
+            if (this.queryString !== '') {
+                this.currentQuery = this.queryString;
+            }
+            const config = {
+                method: 'get',
+                url: this.API_URL + 'search/tv',
+                params: {
+                    api_key: this.API_KEY,
+                    query: this.currentQuery,
+                    page: this.activeShowsPage
+                }
+            }
+            //console.log(config)
+            return axios(config);
+        }
+
+
+    },
+    getTrending() {
         const config = {
             method: 'get',
-            url: this.API_URL + 'search/movie',
+            url: this.API_URL + 'trending/all/day',
             params: {
                 api_key: this.API_KEY,
-                query: this.currentQuery,
-                page: this.activeMoviesPage
             }
         }
-        //console.log(config)
         return axios(config);
     },
-    searchTvShows() {
-        if (this.queryString !== '') {
-            this.currentQuery = this.queryString;
-        }
+    getPopular() {
         const config = {
             method: 'get',
-            url: this.API_URL + 'search/tv',
+            url: this.API_URL + 'movie/popular',
             params: {
                 api_key: this.API_KEY,
-                query: this.currentQuery,
-                page: this.activeShowsPage
             }
         }
-        //console.log(config)
         return axios(config);
 
     },
+
     callApi(key) {
-        Promise.all([this.searchMovies(), this.searchTvShows()])
+        Promise.all([this.searchMovies(this.searching), this.searchTvShows(this.searching), this.getTrending(), this.getPopular()])
             .then((results) => {
-                //console.log(results)
+                console.log(results)
                 this.queryString = '';
                 this.loading = false;
                 if (key === 'movie') {
-                    this.results.movies = results[0].data;
+                    this.resultsSearch.movies = results[0].data;
                 } else if (key === 'tv') {
-                    this.results.shows = results[1].data;
-                } else {
-                    this.results.movies = results[0].data;
-                    this.results.shows = results[1].data;
+                    this.resultsSearch.shows = results[1].data;
+                } else if (key === 'searchAll') {
+                    this.resultsSearch.movies = results[0].data;
+                    this.resultsSearch.shows = results[1].data;
+                } else if (key === 'getAll') {
+                    this.resultsGet.trending = results[2].data;
+                    this.resultsGet.popular = results[3].data;
                 }
-
-                console.log(this.results.movies, this.results.shows)
+                console.log(this.resultsSearch, this.resultsGet)
+                //console.log(this.results.movies, this.results.shows)
             })
     }
 

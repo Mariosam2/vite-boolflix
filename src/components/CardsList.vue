@@ -97,7 +97,7 @@ export default {
 
 <template>
     <section class="cards-list text-white" v-if="list.results && list.results.length !== 0">
-        <h2 v-if="title === 'movies'" class="title">Movies{{ title }}</h2>
+        <h2 v-if="title === 'movies'" class="title">Movies</h2>
         <h2 v-else class="title">Tv Series</h2>
         <div class="loading" v-if="store.loading">Loading...</div>
         <div class="row mb-3 row-cols-1 row-cols-md-3 row-cols-xl-5 g-2" v-else>
@@ -116,9 +116,13 @@ export default {
         </div>
 
     </section>
+    <!--  TODO: mettere la condizione per searching se il risultato non è vuoto e displayare errore una sola volta -->
+    <div class="empty" v-else>No items corresponding to your research</div>
 </template>
 
 <style lang="scss" scoped>
+@use '../assets/scss/partials/variables' as *;
+
 .next,
 .prev {
     margin: 0 0.5rem;
@@ -134,5 +138,9 @@ export default {
     text-align: center;
     font-size: 2rem;
     font-weight: bold;
+}
+
+.empty {
+    color: $almost-white;
 }
 </style>
