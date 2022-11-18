@@ -30,6 +30,7 @@ export default {
             }
             console.log(index)
             if (index > this.list.total_pages) {
+                //dovrei controllare entrambi i counter
                 this.store.activePage = 1;
             }
 
@@ -47,6 +48,7 @@ export default {
             }
             console.log(index)
             if (index < 1) {
+                //dovrei controllare entrambi i counter
                 this.store.activePage = this.list.total_pages;
             }
 
