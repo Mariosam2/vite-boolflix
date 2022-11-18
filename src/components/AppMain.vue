@@ -17,7 +17,7 @@ export default {
 
 <template>
     <main id="site_main">
-        <div class="container-xl px-5 px-md-3 px-xl-0 pb-3 d-flex flex-wrap align-items-center"
+        <div class="container-xl px-5 px-md-3 px-xl-0 pb-3 d-flex flex-wrap align-items-center ms_container"
             v-if="store.results.movies !== null && store.results.shows !== null">
             <cards-list v-for="(data, key) in store.results" :list="data" :title="key"></cards-list>
 
@@ -27,6 +27,10 @@ export default {
 
 <style lang="scss">
 @use '../assets/scss/partials/variables' as *;
+
+.container-xl.ms_container {
+    margin-top: 5rem;
+}
 
 .cards-list {
     width: 100%;

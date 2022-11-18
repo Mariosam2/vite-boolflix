@@ -16,7 +16,10 @@ export default {
     },
     methods: {
         getCurrentMoviesAndShows() {
-            this.store.activePage = 1;
+            this.store.activeMoviesPage = 1;
+            this.store.activeShowsPage = 1;
+            this.store.leftBound = true;
+            this.store.rightBound = false;
             if (this.store.queryString !== '') {
                 this.store.callSearchApi('movie');
                 this.store.callSearchApi('tv');
@@ -30,7 +33,7 @@ export default {
 </script>
 
 <template>
-    <header id="site_header" class="my-4">
+    <header id="site_header" class="py-2 position-fixed w-100">
         <div class="container-xl px-5 px-md-3 px-xl-0 d-flex justify-content-between align-items-center">
             <div class="logo"><img class="img-fluid"
                     src="https://image.tmdb.org/t/p/w342/wwemzKWzjKYJFfCeiB57q3r4Bcm.png" alt="logo" /></div>
@@ -48,6 +51,12 @@ export default {
 
 <style lang="scss" scoped>
 @use '../assets/scss/partials/variables' as *;
+
+header {
+    top: 0;
+    z-index: 2;
+    background-color: $secondary;
+}
 
 .logo {
     width: 100px;

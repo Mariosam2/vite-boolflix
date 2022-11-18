@@ -14,48 +14,75 @@ export default {
         return {
             store,
 
+
         }
     },
     methods: {
         next() {
-            let index = 0;
+
             if (this.title === 'movies') {
-                ++this.store.activeMoviesPage;
-                index = this.store.activeMoviesPage
-                this.store.callSearchApi('movie')
+                this.store.activeMoviesPage++;
+                if (store.activeMoviesPage < this.list.total_pages) {
+                    this.store.callSearchApi('movie');
+                    this.store.rightBound = false
+                    this.store.leftBound = false
+
+                } else {
+                    this.store.callSearchApi('movie');
+                    this.store.rightBound = true
+                }
             } else {
-                ++this.store.activeShowsPage;
-                index = this.store.activeShowsPage
-                this.store.callSearchApi('tv')
+                this.store.activeShowsPage++;
+                if (store.activeShowsPage < this.list.total_pages) {
+                    this.store.callSearchApi('tv');
+                    this.store.rightBound = false
+                    this.store.leftBound = false
+
+                } else {
+                    this.store.callSearchApi('tv');
+                    this.store.rightBound = true
+                }
+
             }
-            console.log(index)
-            if (index > this.list.total_pages) {
-                //dovrei controllare entrambi i counter
-                this.store.activePage = 1;
-            }
+            this.$refs.pages.scrollIntoView(false);
 
         },
         prev() {
-            let index = 0;
             if (this.title === 'movies') {
-                --this.store.activeMoviesPage;
-                index = this.store.activeMoviesPage
-                this.store.callSearchApi('movie')
+                this.store.activeMoviesPage--;
+                if (store.activeMoviesPage > 1) {
+                    this.store.callSearchApi('movie');
+                    this.store.rightBound = false
+                    this.store.leftBound = false
+
+                } else {
+                    this.store.activeMoviesPage = 1;
+                    this.store.callSearchApi('movie');
+                    this.store.leftBound = true
+                }
             } else {
-                --this.store.activeShowsPage;
-                index = this.store.activeShowsPage
-                this.store.callSearchApi('tv')
+                this.store.activeShowsPage--;
+                if (store.activeShowsPage > 1) {
+                    this.store.callSearchApi('tv');
+                    this.store.rightBound = false
+                    this.store.leftBound = false
+
+                } else {
+                    this.store.activeShowsPage = 1;
+                    this.store.callSearchApi('tv');
+                    this.store.leftBound = true
+                }
+
             }
-            console.log(index)
-            if (index < 1) {
-                //dovrei controllare entrambi i counter
-                this.store.activePage = this.list.total_pages;
-            }
+            this.$refs.pages.scrollIntoView(false);
 
 
 
-        }
-    }
+
+        },
+
+    },
+
 
 }
 </script>
@@ -68,11 +95,11 @@ export default {
         <div class="row mb-3 row-cols-1 row-cols-md-3 row-cols-xl-5 g-2" v-else>
             <card-item v-for="card in list.results" :card="card"></card-item>
         </div>
-        <div class="pages" v-if="list.total_pages > 1">
-            <button class="btn btn-primary" @click="prev">Prev</button>
+        <div class="pages d-flex justify-content-center py-4" ref="pages" v-if="list.total_pages > 1">
+            <button v-show="!store.leftBound" class="btn btn-primary" @click="prev(title)">Prev</button>
             <div v-if="title === 'movies'">{{ store.activeMoviesPage }}</div>
             <div v-else>{{ store.activeShowsPage }}</div>
-            <button class="btn btn-primary" @click="next">next</button>
+            <button v-if="!store.rightBound" class="btn btn-primary" @click="next">next</button>
         </div>
 
     </section>
