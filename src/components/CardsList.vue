@@ -22,7 +22,7 @@ export default {
         }
     },
     methods: {
-        next() {
+        /* next() {
 
             if (this.title === 'movies') {
                 this.store.activeMoviesPage++;
@@ -87,7 +87,7 @@ export default {
 
 
 
-        },
+        }, */
 
     },
 
@@ -103,7 +103,7 @@ export default {
         <div class="row mb-3 row-cols-1 row-cols-md-3 row-cols-xl-5 g-2" v-else>
             <card-item v-for="card in list.results" :card="card"></card-item>
         </div>
-        <div class="pages d-flex justify-content-center py-4 align-items-center" ref="pages"
+        <!-- <div class="pages d-flex justify-content-center py-4 align-items-center" ref="pages"
             v-if="list.total_pages > 1">
             <font-awesome-icon class="prev fs-5" v-show="!store.leftBound" @click="prev"
                 icon=" fa-solid fa-chevron-left" />
@@ -113,7 +113,7 @@ export default {
                 icon=" fa-solid fa-chevron-right" />
 
 
-        </div>
+        </div> -->
 
     </section>
 </template>
@@ -122,6 +122,7 @@ export default {
 .next,
 .prev {
     margin: 0 0.5rem;
+    padding: 0.5rem;
 
     &:hover {
         cursor: pointer;

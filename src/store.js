@@ -15,7 +15,51 @@ export let store = reactive({
         movies: null,
         shows: null,
     },
-    callSearchApi(key) {
+    // ho reimplementato la chiamata perchè mi torna più comoda nell'organizzazione delle richieste (per prendere i film e le serie tv con get treding)
+    searchMovies() {
+        if (this.queryString !== '') {
+            this.currentQuery = this.queryString;
+        }
+        const config = {
+            method: 'get',
+            url: this.API_URL + 'search/movie',
+            params: {
+                api_key: this.API_KEY,
+                query: this.currentQuery,
+                page: this.activeMoviesPage
+            }
+        }
+        console.log(config)
+        return axios.get(config);
+    },
+    searchTvShows() {
+        if (this.queryString !== '') {
+            this.currentQuery = this.queryString;
+        }
+        const config = {
+            method: 'get',
+            url: this.API_URL + 'search/movie',
+            params: {
+                api_key: this.API_KEY,
+                query: this.currentQuery,
+                page: this.activeMoviesPage
+            }
+        }
+        console.log(config)
+        return axios.get(config);
+
+    },
+    callApi() {
+        Promise.all([this.searchMovies(), this.searchTvShows()])
+            .then((results) => {
+                //console.log(results)
+                this.queryString = '';
+                this.loading = false;
+                this.results.movies = results[0];
+                this.results.shows = results[1];
+            })
+    }
+    /* callSearchApi(key) {
         if (this.queryString !== '') {
             this.currentQuery = this.queryString;
         }
@@ -53,5 +97,5 @@ export let store = reactive({
                 this.errorMsg = err.message;
                 //console.log(error);
             })
-    }
+    } */
 })

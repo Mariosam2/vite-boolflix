@@ -21,8 +21,8 @@ export default {
             this.store.leftBound = true;
             this.store.rightBound = false;
             if (this.store.queryString !== '') {
-                this.store.callSearchApi('movie');
-                this.store.callSearchApi('tv');
+                this.store.callApi();
+                this.store.callApi();
 
 
             }
