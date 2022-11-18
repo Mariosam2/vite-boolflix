@@ -18,8 +18,7 @@ export default {
 <template>
     <main id="site_main">
         <div class="container-xl px-5 px-md-3 px-xl-0 pb-3 d-flex flex-wrap align-items-center">
-            <cards-list :list="store.currentMovies"></cards-list>
-            <cards-list :list="store.currentShows"></cards-list>
+            <cards-list v-for="(data, key) in store.results" :list="data.results" :title="key"></cards-list>
 
         </div>
     </main>
