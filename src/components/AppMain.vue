@@ -17,8 +17,9 @@ export default {
 
 <template>
     <main id="site_main">
-        <div class="container-xl px-5 px-md-3 px-xl-0 pb-3 d-flex flex-wrap align-items-center">
-            <cards-list v-for="(data, key) in store.results" :list="data.results" :title="key"></cards-list>
+        <div class="container-xl px-5 px-md-3 px-xl-0 pb-3 d-flex flex-wrap align-items-center"
+            v-if="store.results.movies !== null && store.results.shows !== null">
+            <cards-list v-for="(data, key) in store.results" :list="data" :title="key"></cards-list>
 
         </div>
     </main>
@@ -31,15 +32,6 @@ export default {
     width: 100%;
 }
 
-.row {
-    /* scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch; */
-    overflow-x: auto;
-}
-
-.col {
-    margin-bottom: 0.5rem;
-}
 
 /* .col {
     scroll-snap-align: start;

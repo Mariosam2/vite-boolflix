@@ -17,8 +17,8 @@ export default {
     methods: {
         getCurrentMoviesAndShows() {
             if (this.store.queryString !== '') {
-                this.store.callApi('movie');
-                this.store.callApi('tv');
+                this.store.callSearchApi('movie');
+                this.store.callSearchApi('tv');
 
 
             }

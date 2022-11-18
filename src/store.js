@@ -1,22 +1,24 @@
 import { reactive } from "vue";
 import axios from 'axios';
 export let store = reactive({
+    activePage: 1,
     loading: true,
     errorMsg: '',
     API_KEY: '8223b7e6f75caa7d554c0aa366a0c2e3',
-    API_URL: 'https://api.themoviedb.org/3/search/',
+    API_URL: 'https://api.themoviedb.org/3/',
     queryString: '',
     results: {
-        currentMovies: null,
-        currentShows: null,
+        movies: null,
+        shows: null,
     },
-    callApi(key) {
+    callSearchApi(key) {
         const config = {
             method: 'get',
-            url: this.API_URL + key,
+            url: this.API_URL + 'search/' + key,
             params: {
                 api_key: this.API_KEY,
                 query: this.queryString,
+                page: this.activePage
             }
         }
 
@@ -25,16 +27,16 @@ export let store = reactive({
                 this.loading = false;
                 //console.log((resp.data));
                 if (key === 'movie') {
-                    this.results.currentMovies = resp.data;
+                    this.results.movies = resp.data;
                     //console.log(resp.data)
                     //console.log(resp.data.results)
                     //console.log(this.currentMovies)
                 } else {
-                    this.results.currentShows = resp.data;
+                    this.results.shows = resp.data;
                     //console.log(resp.data.results)
                     //console.log(this.currentShows)
                 }
-                this.queryString = '';
+                //this.queryString = '';
 
 
             })
