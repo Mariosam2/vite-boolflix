@@ -1,4 +1,5 @@
 <script>
+import { store } from '../store.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faStar } from '@fortawesome/free-solid-svg-icons'
@@ -13,6 +14,7 @@ export default {
     },
     data() {
         return {
+            store,
             votes: 5,
         }
     },
@@ -36,9 +38,8 @@ export default {
                 <div class="card-title">{{ card.title || card.name }}</div>
                 <div class="card-title">{{ card.original_title || card.original_name }}</div>
                 <div class="language">
-                    <img v-if="card.original_language == 'en'" src="../assets/img/us.png" alt="us" />
-                    <img v-else-if="card.original_language == 'es'" src="../assets/img/es.png" alt="us" />
-                    <img v-else-if="card.original_language == 'ja'" src="../assets/img/jp.png" alt="us" />
+                    <img v-if="store.languages.includes(card.original_language)"
+                        :src="`../src/assets/img/${card.original_language}.png`" :alt="`${card.original_language}`" />
                     <div class="fw-bold text-uppercase" v-else>{{ card.original_language }}</div>
                 </div>
                 <div class="vote-count">

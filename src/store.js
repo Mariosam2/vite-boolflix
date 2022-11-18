@@ -1,6 +1,7 @@
 import { reactive } from "vue";
 import axios from 'axios';
 export let store = reactive({
+    languages: ['en', 'es', 'jp'],
     leftBound: true,
     rightBound: false,
     activeMoviesPage: 1,
@@ -29,8 +30,8 @@ export let store = reactive({
                 page: this.activeMoviesPage
             }
         }
-        console.log(config)
-        return axios.get(config);
+        //console.log(config)
+        return axios(config);
     },
     searchTvShows() {
         if (this.queryString !== '') {
@@ -38,64 +39,75 @@ export let store = reactive({
         }
         const config = {
             method: 'get',
-            url: this.API_URL + 'search/movie',
+            url: this.API_URL + 'search/tv',
             params: {
                 api_key: this.API_KEY,
                 query: this.currentQuery,
-                page: this.activeMoviesPage
+                page: this.activeShowsPage
             }
         }
-        console.log(config)
-        return axios.get(config);
+        //console.log(config)
+        return axios(config);
 
     },
-    callApi() {
+    callApi(key) {
         Promise.all([this.searchMovies(), this.searchTvShows()])
             .then((results) => {
                 //console.log(results)
                 this.queryString = '';
                 this.loading = false;
-                this.results.movies = results[0];
-                this.results.shows = results[1];
+                if (key === 'movie') {
+                    this.results.movies = results[0].data;
+                } else if (key === 'tv') {
+                    this.results.shows = results[1].data;
+                } else {
+                    this.results.movies = results[0].data;
+                    this.results.shows = results[1].data;
+                }
+
+                console.log(this.results.movies, this.results.shows)
             })
     }
-    /* callSearchApi(key) {
-        if (this.queryString !== '') {
-            this.currentQuery = this.queryString;
-        }
 
-        const config = {
-            method: 'get',
-            url: this.API_URL + 'search/' + key,
-            params: {
-                api_key: this.API_KEY,
-                query: this.currentQuery,
-                page: key === 'movie' ? this.activeMoviesPage : this.activeShowsPage
-            }
-        }
-
-        axios(config)
-            .then(resp => {
-                //console.log((resp.data));
-                if (key === 'movie') {
-                    this.results.movies = resp.data;
-                    //console.log(resp.data)
-                    //console.log(resp.data.results)
-                    //console.log(this.currentMovies)
-                } else {
-                    this.results.shows = resp.data;
-                    //console.log(resp.data.results)
-                    //console.log(this.currentShows)
-                }
-                this.queryString = '';
-                this.loading = false;
-
-
-            })
-            .catch(err => {
-                this.loading = false;
-                this.errorMsg = err.message;
-                //console.log(error);
-            })
-    } */
 })
+
+
+/* callSearchApi(key) {
+       if (this.queryString !== '') {
+           this.currentQuery = this.queryString;
+       }
+
+       const config = {
+           method: 'get',
+           url: this.API_URL + 'search/' + key,
+           params: {
+               api_key: this.API_KEY,
+               query: this.currentQuery,
+               page: key === 'movie' ? this.activeMoviesPage : this.activeShowsPage
+           }
+       }
+
+       axios(config)
+           .then(resp => {
+               //console.log((resp.data));
+               if (key === 'movie') {
+                   this.results.movies = resp.data;
+                   //console.log(resp.data)
+                   //console.log(resp.data.results)
+                   //console.log(this.currentMovies)
+               } else {
+                   this.results.shows = resp.data;
+                   //console.log(resp.data.results)
+                   //console.log(this.currentShows)
+               }
+               this.queryString = '';
+               this.loading = false;
+
+
+           })
+           .catch(err => {
+               this.loading = false;
+               this.errorMsg = err.message;
+               //console.log(error);
+           })
+   } */
