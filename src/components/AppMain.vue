@@ -27,8 +27,10 @@ export default {
         </div>
         <div class="container-xl px-5 px-md-3 px-xl-0 pb-3 d-flex flex-wrap align-items-center ms_container"
             v-if="(store.resultsSearch.movies && store.resultsSearch.shows) && store.searching">
-            <cards-list v-for="(data, key) in store.resultsSearch" :list="data" :title="key">
+            <cards-list v-show="data.results.length !== 0" v-for="(data, key) in store.resultsSearch" :list="data"
+                :title="key">
             </cards-list>
+
 
         </div>
     </main>

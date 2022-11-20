@@ -3,8 +3,6 @@ import axios from 'axios';
 export let store = reactive({
     languages: ['en', 'es', 'jp'],
     searching: false,
-    leftBound: true,
-    rightBound: false,
     activeMoviesPage: 1,
     activeShowsPage: 1,
     loading: true,
@@ -87,7 +85,7 @@ export let store = reactive({
     callApi(key) {
         Promise.all([this.searchMovies(this.searching), this.searchTvShows(this.searching), this.getTrending(), this.getPopular()])
             .then((results) => {
-                console.log(results)
+                //console.log(results)
                 this.queryString = '';
                 this.loading = false;
                 if (key === 'movie') {
@@ -101,7 +99,7 @@ export let store = reactive({
                     this.resultsGet.trending = results[2].data;
                     this.resultsGet.popular = results[3].data;
                 }
-                console.log(this.resultsSearch, this.resultsGet)
+                //console.log(this.resultsSearch, this.resultsGet)
                 //console.log(this.results.movies, this.results.shows)
             })
     }
