@@ -119,6 +119,7 @@ export default {
 <style lang="scss" scoped>
 @use '../assets/scss/partials/variables' as *;
 
+
 .next,
 .prev {
     margin: 0 0.5rem;

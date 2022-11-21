@@ -39,6 +39,14 @@ export default {
 <style lang="scss">
 @use '../assets/scss/partials/variables' as *;
 
+.title {
+    color: $almost-white;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
 .container-xl.ms_container {
     margin-top: 5rem;
 }
@@ -51,69 +59,6 @@ export default {
 /* .col {
     scroll-snap-align: start;
 } */
-
-
-.ms_card {
-    position: relative;
-    aspect-ratio: 2/3;
-    height: 100%;
-
-    &:hover .content {
-        opacity: 1;
-    }
-
-}
-
-.cover {
-    height: 100%;
-    object-fit: cover;
-    object-position: 50% 50%;
-}
-
-
-
-.content,
-.content.show {
-    color: $almost-white;
-    overflow-y: auto;
-    background-color: $dark;
-    padding: 1rem;
-
-    >* {
-        margin-top: 0.5rem;
-    }
-}
-
-.content.show {
-    opacity: 1;
-}
-
-.content {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-
-
-    .language {
-        img {
-            width: 25px;
-            aspect-ratio: 16/9;
-            object-fit: cover;
-        }
-    }
-}
-
-.title {
-    color: $almost-white;
-    text-transform: uppercase;
-    font-weight: bold;
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-}
 </style>
 
 
