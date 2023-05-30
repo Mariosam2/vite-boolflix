@@ -1,0 +1,51 @@
+@use '../../../node_modules/bootstrap/scss/bootstrap.scss';
+@use './partials/scrollbar';
+@use './partials/variables' as *;
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&display=swap');
+
+* {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body.noscroll {
+  overflow: hidden;
+}
+
+*:focus-visible {
+  outline: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Bebas Neue', cursive;
+  font-weight: bold;
+  letter-spacing: 0.1rem;
+}
+
+a {
+  text-decoration: none;
+}
+
+//Utilities
+.bg_secondary {
+  background-color: $secondary;
+}
+.noto_sans {
+  font-family: 'Noto Sans', sans-serif;
+}
+.ms_white {
+  color: $almost-white;
+}
