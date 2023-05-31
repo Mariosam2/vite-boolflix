@@ -17,6 +17,8 @@ export default {
       },
       upcomingCurrentIndex: 0,
       topRatedCurrentIndex: 0,
+      upcomingSlidesPerView: null,
+      topRatedSlidesPerView: null,
     };
   },
   components: {
@@ -26,7 +28,7 @@ export default {
     async getUpcomingAndTopRated() {
       try {
         const response = await Promise.all([store.getUpcomingMovies(), store.getTopRatedMovies()]);
-        this.upComingMovies = response[0].data?.results;
+        this.upComingMovies = response[0].data?.results.filter((item) => item.backdrop_path !== null);
         this.topRatedMovies = response[1].data?.results.filter((_, index) => index < 10);
         //console.log(this.topRatedMovies);
         setTimeout(() => {
@@ -36,14 +38,40 @@ export default {
               this.sliders[section] = new KeenSlider(this.$refs[`home-slider-${section}`], {
                 slideChanged: (slider) => {
                   const currentIndex = slider.track.details.rel;
+                  console.log(currentIndex);
                   return section === 'upcoming' ? (this.upcomingCurrentIndex = currentIndex) : (this.topRatedCurrentIndex = currentIndex);
+                },
+                created: (slider) => {
+                  //console.log(slider);
+                  return section === 'upcoming' ? (this.upcomingSlidesPerView = slider.options.slides.perView) : (this.topRatedSlidesPerView = slider.options.slides.perView);
+                },
+                optionsChanged: (slider) => {
+                  //console.log(this.upcomingSlidesPerView, this.topRatedSlidesPerView);
+                  return section === 'upcoming' ? (this.upcomingSlidesPerView = slider.options.slides.perView) : (this.topRatedSlidesPerView = slider.options.slides.perView);
                 },
                 loop: false,
                 mode: 'snap',
                 renderMode: 'performance',
                 dragSpeed: 1,
                 slides: {
-                  perView: 5,
+                  perView: 1,
+                },
+                breakpoints: {
+                  '(min-width: 540px)': {
+                    slides: {
+                      perView: 2,
+                    },
+                  },
+                  '(min-width: 768px)': {
+                    slides: {
+                      perView: 3,
+                    },
+                  },
+                  '(min-width: 1600px)': {
+                    slides: {
+                      perView: 4,
+                    },
+                  },
                 },
               });
             });
@@ -63,8 +91,9 @@ export default {
 <template>
   <main id="site_main" class="min-vh-100 home">
     <div class="layover"></div>
-    <div class="container-fluid upcoming pb-5 px-0 opacity-0" :class="upComingMovies ? 'opacity-100' : ''">
+    <div class="container-fluid upcoming pb-3 pb-md-5 px-0 opacity-0" :class="upComingMovies ? 'opacity-100' : ''">
       <h2 class="home-title ms_white">Upcoming</h2>
+
       <div v-if="upComingMovies" class="slider-wrapper">
         <div class="icon-container prev" v-if="sliders['upcoming']">
           <font-awesome-icon :class="!upcomingCurrentIndex > 0 ? 'disabled' : ''" @click="sliders['upcoming'].prev()" class="prev-icon" icon="fa-solid fa-chevron-left" />
@@ -77,7 +106,11 @@ export default {
           </div>
         </div>
         <div class="icon-container next" v-if="sliders['upcoming']">
-          <font-awesome-icon :class="upcomingCurrentIndex >= upComingMovies.length - 5 ? 'disabled' : ''" @click="sliders['upcoming'].next()" class="next-icon" icon="fa-solid fa-chevron-right" />
+          <font-awesome-icon
+            :class="upcomingSlidesPerView !== null && upcomingCurrentIndex >= upComingMovies.length - upcomingSlidesPerView ? 'disabled' : ''"
+            @click="sliders['upcoming'].next()"
+            class="next-icon"
+            icon="fa-solid fa-chevron-right" />
         </div>
       </div>
     </div>
@@ -99,7 +132,11 @@ export default {
             </div>
           </div>
           <div class="icon-container next" v-if="sliders['topRated']">
-            <font-awesome-icon :class="topRatedCurrentIndex >= topRatedMovies.length - 5 ? 'disabled' : ''" @click="sliders['topRated'].next()" class="next-icon" icon="fa-solid fa-chevron-right" />
+            <font-awesome-icon
+              :class="topRatedSlidesPerView !== null && topRatedCurrentIndex >= topRatedMovies.length - topRatedSlidesPerView ? 'disabled' : ''"
+              @click="sliders['topRated'].next()"
+              class="next-icon"
+              icon="fa-solid fa-chevron-right" />
           </div>
         </div>
       </div>
@@ -109,7 +146,8 @@ export default {
 <style lang="scss" scoped>
 @use '../assets/scss/partials/variables' as *;
 main {
-  background-color: black;
+  background: linear-gradient(to bottom, rgba(black, 1), transparent, rgba(black, 1)), url(../assets/img/home-top.jpg) no-repeat top, url(../assets/img/home-bottom.jpg) no-repeat bottom;
+  background-size: 100% 50%;
   .layover {
     position: absolute;
     top: 0;
@@ -121,25 +159,16 @@ main {
   }
 
   .upcoming {
-    height: 100%;
-    padding-top: 8rem;
-    background: linear-gradient(to bottom, transparent, rgba(black, 1) 90%), url(../assets/img/home-top.jpg) no-repeat right;
-    background-size: cover;
-  }
-
-  .top-rated {
-    height: 100%;
-    background: linear-gradient(to top, transparent, rgba(black, 1) 90%), url(../assets/img/home-bottom.jpg) no-repeat center;
-    background-size: cover;
-  }
-
-  .upcoming,
-  .top-rated {
-    min-height: 50vh;
+    padding-top: 5rem;
+    @media screen and (min-width: 540px) {
+      padding-top: 8rem;
+    }
   }
 
   .slider-wrapper {
-    padding-inline: calc(20px + 1.5rem);
+    @media screen and (min-width: 1200px) {
+      padding-inline: calc(20px + 1.5rem);
+    }
     position: relative;
 
     &:hover {
@@ -152,15 +181,26 @@ main {
   .home-title {
     position: relative;
     z-index: 1;
-    padding-left: calc(20px + 1.75rem);
+    padding-left: 0.75rem;
+    @media screen and (min-width: 1200px) {
+      padding-left: calc(20px + 1.75rem);
+    }
   }
   .keen-slider {
     position: relative;
     z-index: 1;
+    overflow-y: visible;
+    overflow-x: clip;
   }
 
   .upcoming .icon-container {
-    height: calc(100% - 3rem);
+    @media screen and (min-width: 992px) {
+      height: calc(100% - 1.5rem);
+    }
+  }
+
+  .top-rated .icon-container {
+    height: 20vw;
   }
 
   .icon-container {
@@ -176,6 +216,12 @@ main {
     z-index: 3;
     border-radius: 0.5rem;
     transition: all 0.35s ease;
+    display: none;
+
+    @media screen and (min-width: 1200px) {
+      display: flex;
+      align-items: center;
+    }
 
     &:hover {
       opacity: 1;
@@ -214,25 +260,43 @@ main {
 
   .top-rated .keen-slider:not([data-keen-slider-disabled]) .keen-slider__slide {
     overflow: visible;
+    width: 300px;
   }
-
+  .top-rated .home-slide {
+    padding: 0.75rem;
+    @media screen and (min-width: 1200px) {
+      padding: 1.5rem;
+    }
+  }
   .home-slide {
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
-    height: 280px;
+    height: 100%;
 
     [class^='ranking-'] {
-      position: absolute;
-      right: 50%;
       color: $secondary;
-      font-size: 280px;
+      font-size: 60vw;
       font-weight: 900;
       -webkit-text-stroke-width: 4px;
-      -webkit-text-stroke-color: #424141;
-      letter-spacing: -2rem;
-      line-height: 280px;
+      -webkit-text-stroke-color: #676666;
+      letter-spacing: -2vw;
+      line-height: 70vw;
+      @media screen and (min-width: 540px) {
+        font-size: 30vw;
+        line-height: 40vw;
+      }
+      @media screen and (min-width: 768px) {
+        font-size: 20vw;
+        line-height: 25vw;
+      }
     }
+    .ranking-1 {
+      @media screen and (min-width: 1200px) {
+        right: 55%;
+      }
+    }
+
     .ranking-10 {
       left: 0;
     }

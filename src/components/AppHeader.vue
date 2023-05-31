@@ -11,6 +11,7 @@ export default {
       currentQuery: '',
       isSearchBarOpen: false,
       isOpen: false,
+      offCanvasNav: false,
     };
   },
   methods: {
@@ -110,6 +111,9 @@ export default {
       this.currentQuery = '';
       searchbar.focus();
     },
+    toggleNav() {
+      this.offCanvasNav = !this.offCanvasNav;
+    },
   },
   computed: {
     currentRouteName() {
@@ -170,11 +174,11 @@ export default {
 </script>
 
 <template>
-  <header id="site_header" class="py-2 w-100 position-fixed">
-    <div class="background" :class="this.scrollY > 0 ? '' : 'opacity-0'"></div>
-    <div class="container-fluid px-5 mx-3 d-flex justify-content-between align-items-center">
-      <div class="logo"><img class="img-fluid" :src="store.getStaticImage('boolflix-logo.png')" alt="logo" /></div>
-      <nav class="navbar me-auto ps-4">
+  <header id="site_header" class="py-sm-2 w-100">
+    <div class="background d-none d-sm-block" :class="this.scrollY > 0 ? '' : 'opacity-0'"></div>
+    <div class="container-fluid d-none d-sm-flex px-3 px-md-5 justify-content-between align-items-center">
+      <div class="logo d-none d-md-block"><img class="img-fluid" :src="store.getStaticImage('boolflix-logo.png')" alt="logo" /></div>
+      <nav class="navbar me-auto ps-md-4">
         <router-link class="nav-link fw-semibold mx-3" :class="currentRouteName === 'home' ? 'active' : ''" aria-current="page" :to="{ name: 'home' }">Home</router-link>
         <router-link class="nav-link fw-semibold mx-3" :class="currentRouteName === 'movies' ? 'active' : ''" aria-current="page" :to="{ name: 'movies' }">Movies</router-link>
         <router-link class="nav-link fw-semibold mx-3" :class="currentRouteName === 'tvSeries' ? 'active' : ''" aria-current="page" :to="{ name: 'tvSeries' }">Tv Series</router-link>
@@ -189,6 +193,37 @@ export default {
         </div>
       </div>
     </div>
+    <div class="container-fluid pt-3 d-sm-none">
+      <div class="heading d-flex align-items-center">
+        <div class="logo invisible"><img class="img-fluid" :src="store.getStaticImage('boolflix-logo.png')" alt="logo" /></div>
+        <div class="burger" :class="offCanvasNav ? 'open' : ''" @click="toggleNav()">
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+        </div>
+      </div>
+    </div>
+    <div class="off-canvas-nav d-sm-none py-3" :class="offCanvasNav ? 'open' : ''">
+      <div class="container-fluid">
+        <div class="heading d-flex align-items-center">
+          <div class="logo"><img class="img-fluid" :src="store.getStaticImage('boolflix-logo.png')" alt="logo" /></div>
+        </div>
+        <nav class="navbar me-auto ps-md-4 d-flex flex-column align-items-start">
+          <router-link class="nav-link fw-semibold ms-2 my-3" :class="currentRouteName === 'home' ? 'active' : ''" aria-current="page" :to="{ name: 'home' }">Home</router-link>
+          <router-link class="nav-link fw-semibold ms-2 my-3" :class="currentRouteName === 'movies' ? 'active' : ''" aria-current="page" :to="{ name: 'movies' }">Movies</router-link>
+          <router-link class="nav-link fw-semibold ms-2 my-3" :class="currentRouteName === 'tvSeries' ? 'active' : ''" aria-current="page" :to="{ name: 'tvSeries' }">Tv Series</router-link>
+          <router-link class="nav-link fw-semibold ms-2 my-3" :class="currentRouteName === 'watchList' ? 'active' : ''" aria-current="page" :to="{ name: 'watchList' }">Watchlist</router-link>
+          <div class="search d-flex align-items-center ms-2 my-3" :class="isSearchBarOpen ? 'open' : ''">
+            <font-awesome-icon v-if="!isSearchBarOpen" class="search-icon" @click="openSearchbar()" icon="fa-solid fa-magnifying-glass" />
+            <font-awesome-icon v-if="isSearchBarOpen" @click="closeSearchBar()" class="close-icon" icon="fa-solid fa-xmark" />
+            <div class="field position-relative">
+              <input type="text" id="searchbar" placeholder="Search..." autocomplete="off" v-model="queryString" @keyup.enter="search($event)" />
+              <font-awesome-icon v-if="currentQuery.length > 0 && isSearchBarOpen" @click="emptySearchBar()" class="clear-icon" icon="fa-solid fa-xmark" />
+            </div>
+          </div>
+        </nav>
+      </div>
+    </div>
   </header>
 </template>
 
@@ -196,6 +231,8 @@ export default {
 @use '../assets/scss/partials/variables' as *;
 
 #site_header {
+  position: absolute;
+
   top: 0;
   z-index: 4;
   .container-fluid,
@@ -228,6 +265,9 @@ export default {
 .navbar {
   .nav-link {
     position: relative;
+    @media screen and (max-width: 587px) {
+      font-size: 1.1rem;
+    }
   }
 
   .nav-link::after {
@@ -237,7 +277,7 @@ export default {
     width: 100%;
     height: 100%;
     color: white;
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid transparent;
     transform: scaleX(0);
     transition: transform 0.25s ease;
   }
@@ -339,7 +379,7 @@ export default {
   }
 }
 
-.open {
+.search.open {
   border-radius: 8px;
   transition: all 0.5s cubic-bezier(0.51, 0.92, 0.24, 1.15);
   box-shadow: 0 0 5px 5px rgba(#000, 0.18);
@@ -349,6 +389,82 @@ export default {
     input {
       display: block;
     }
+  }
+}
+
+.burger {
+  position: relative;
+  width: 28px;
+  margin-left: auto;
+  z-index: 6;
+}
+
+.burger .line {
+  width: 100%;
+  height: 4px;
+  background-color: $almost-white;
+  border-radius: 28px;
+  transition: all 0.25s ease;
+}
+
+.burger .line:nth-child(2) {
+  margin-block: 0.3em;
+  left: 0;
+}
+
+.burger.open .line:first-child,
+.burger.open .line:nth-child(3) {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+}
+
+.burger.open .line:first-child {
+  rotate: 45deg;
+}
+.burger.open .line:nth-child(2) {
+  position: relative;
+  opacity: 0;
+  left: -28px;
+}
+.burger.open .line:nth-child(3) {
+  rotate: -45deg;
+}
+
+.off-canvas-nav {
+  visibility: hidden;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: all 0.25s ease;
+  > * {
+    transition: opacity 0.1s easee;
+    opacity: 0;
+  }
+  .search.open {
+    border-radius: 0;
+  }
+  .search {
+    border: 1px solid $almost-white;
+
+    .search-icon,
+    .close-icon {
+      padding: 0.5rem;
+    }
+  }
+}
+
+.off-canvas-nav.open {
+  visibility: visible;
+  transform: scaleX(1);
+  background-color: black;
+  > * {
+    opacity: 1;
   }
 }
 </style>

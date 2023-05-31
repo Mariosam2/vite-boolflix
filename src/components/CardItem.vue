@@ -61,14 +61,27 @@ export default {
   aspect-ratio: 4/3;
 }
 .squared {
-  padding: 1.5rem;
+  padding: 0.75rem;
+  @media screen and (min-width: 1200px) {
+    padding: 1.5rem;
+  }
+}
+
+.col {
+  max-height: 100%;
 }
 
 .top-rated .home-slide .col {
   position: absolute;
-  right: 0;
   width: 50%;
+  right: 0.75rem;
+  top: 50%;
+  translate: 0 -50%;
   padding-right: 0.2rem;
+  max-height: 100%;
+  @media screen and (min-width: 1200px) {
+    right: 1.5rem;
+  }
 }
 
 .top-rated .ms_card {
