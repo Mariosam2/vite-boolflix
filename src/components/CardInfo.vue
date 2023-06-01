@@ -401,7 +401,7 @@ export default {
 [id*='card-info'].h-full {
   height: 600px;
 
-  @media screen and (min-width: 1920px) {
+  @media screen and (min-width: 1921px) {
     height: 800px;
   }
 }
@@ -426,14 +426,14 @@ export default {
     width: 586px;
   }
   position: relative;
-  @media screen and (min-width: 1920px) {
+  @media screen and (min-width: 1921px) {
     width: 1040px;
   }
 }
 
 .preview-card.gradient {
   background: linear-gradient(to bottom, transparent 300px, $secondary 300px);
-  @media screen and (min-width: 1920px) {
+  @media screen and (min-width: 1921px) {
     background: linear-gradient(to bottom, transparent 500px, $secondary 500px);
   }
 }
@@ -447,7 +447,7 @@ export default {
   position: relative;
   height: 300px;
 
-  @media screen and (min-width: 1920px) {
+  @media screen and (min-width: 1921px) {
     height: 500px;
   }
 
@@ -488,7 +488,7 @@ export default {
     width: 220%;
     height: 150%;
   }
-  @media screen and (min-width: 1920px) {
+  @media screen and (min-width: 1921px) {
     width: 135%;
     height: 135%;
   }

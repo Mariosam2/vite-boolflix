@@ -84,12 +84,6 @@ export default {
   }
 }
 
-.top-rated .ms_card {
-  &:hover {
-    scale: none;
-  }
-}
-
 .ms_card {
   position: relative;
   aspect-ratio: 2/3;
