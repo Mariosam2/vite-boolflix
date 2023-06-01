@@ -45,12 +45,16 @@ main {
 
   .empty-watchlist {
     text-align: center;
-    max-width: 320px;
     width: 100%;
+    max-width: 320px;
     position: absolute;
     top: 50%;
     left: 50%;
     translate: -50% -50%;
+
+    @media screen and (min-width: 586px) {
+      max-width: 400px;
+    }
     .empty-icon {
       width: 180px;
       height: auto;
