@@ -7,7 +7,6 @@ export default {
       store,
       scrollY: 0,
       loading: false,
-      hasChanged: false,
       currentQuery: '',
       isSearchBarOpen: false,
       isOpen: false,
@@ -15,87 +14,77 @@ export default {
     };
   },
   methods: {
-    //Im changing the query in the store only when it's changed and it's not empty, and keep track of the change using a boolean : hasChanged
-    //doing it in this way the user can change pages even if he empties the input
-    //in order to check if a user is changing a page, I use event.currentTarget, since I have a watcher for the current pages that are changed in SearchResults component
-    //rember that the user cannot submit a search if the current query is empty or if the query in the store hasn't changed
-    //(basically I'm lowering useless requests to the api preventing redundant requests with the same querios or empty queries)
-    //note that if the user empties the input e type the same query as the previous one typed, the search will occur
     async search(event) {
-      //console.log(this.currentQuery);
-      console.log(this.$route.name);
-      if (this.currentQuery.replace('^\s*$').length !== 0 || !event) {
-        if ((event && this.hasChanged) || (this.$route.name !== 'search' && this.$route.name !== 'notFound')) {
+      if (!this.isSearchBarOpen) {
+        this.openSearchbar();
+        return;
+      } else if (this.currentQuery.replace('^\s*$').length !== 0 || !event) {
+        if (event || (this.$route.name !== 'search' && this.$route.name !== 'notFound')) {
           store.loading = true;
           store.queryString = this.currentQuery;
-          if (event && this.hasChanged) {
+          if (event) {
             store.currentMoviesPage = 1;
             store.currentTvSeriesPage = 1;
           }
         }
 
-        if (this.hasChanged || (this.$route.name !== 'search' && this.$route.name !== 'notFound') || !event) {
-          console.log('call');
-          Promise.all([store.searchResults('movie', store.currentMoviesPage), store.searchResults('tv', store.currentTvSeriesPage)])
-            .then((resp) => {
-              window.localStorage.setItem('queryString', store.queryString);
-              //Taking the first 8 elements with a poster image sorted by popularity
-              store.searchedResults.movies = resp[0]?.data.results
-                .filter((result) => result.poster_path !== null)
-                .toSorted((a, b) => b.popularity - a.popularity)
-                .slice(0, 8);
+        console.log('call');
+        Promise.all([store.searchResults('movie', store.currentMoviesPage), store.searchResults('tv', store.currentTvSeriesPage)])
+          .then((resp) => {
+            //Taking the first 8 elements with a poster image sorted by popularity
+            window.localStorage.setItem('queryString', store.queryString);
+            store.searchedResults.movies = resp[0]?.data.results
+              .filter((result) => result.poster_path !== null)
+              .sort((a, b) => b.popularity - a.popularity)
+              .slice(0, 8);
 
-              store.searchedResults.tv = resp[1]?.data.results
-                .filter((result) => result.poster_path !== null)
-                .toSorted((a, b) => b.popularity - a.popularity)
-                .slice(0, 8);
+            store.searchedResults.tv = resp[1]?.data.results
+              .filter((result) => result.poster_path !== null)
+              .sort((a, b) => b.popularity - a.popularity)
+              .slice(0, 8);
 
-              console.log(store.searchedResults);
-              window.localStorage.setItem('searchedResults', JSON.stringify({ movies: store.searchedResults.movies, tv: store.searchedResults.tv }));
+            console.log(store.searchedResults);
+            window.localStorage.setItem('searchedResults', JSON.stringify({ movies: store.searchedResults.movies, tv: store.searchedResults.tv }));
 
-              store.searchedMoviesTotalPages = resp[0]?.data.total_pages;
-              store.searchedTvSeriesTotalPages = resp[1]?.data.total_pages;
-              /* console.log(resp[0].data, resp[1].data); */
-              window.localStorage.setItem('currentPages', JSON.stringify({ movies: store.currentMoviesPage, tv: store.currentTvSeriesPage }));
-              window.localStorage.setItem('totalPages', JSON.stringify({ movies: store.searchedMoviesTotalPages, tv: store.searchedTvSeriesTotalPages }));
-              this.offCanvasNav = false;
-              setTimeout(() => {
-                //console.log(this.$route.name);
-                if (this.$route.name !== 'search') {
-                  this.$router.push({ name: 'search' });
-                }
-                ////console.log(this.hasChanged);
-                if (event) {
-                  this.hasChanged = false;
-                  store.loading = false;
-                }
+            store.searchedMoviesTotalPages = resp[0]?.data.total_pages;
+            store.searchedTvSeriesTotalPages = resp[1]?.data.total_pages;
+            /* console.log(resp[0].data, resp[1].data); */
+            window.localStorage.setItem('currentPages', JSON.stringify({ movies: store.currentMoviesPage, tv: store.currentTvSeriesPage }));
+            window.localStorage.setItem('totalPages', JSON.stringify({ movies: store.searchedMoviesTotalPages, tv: store.searchedTvSeriesTotalPages }));
+            this.offCanvasNav = false;
+            setTimeout(() => {
+              this.emptySearchBar();
+              //console.log(this.$route.name);
+              if (this.$route.name !== 'search') {
+                this.$router.push({ name: 'search' });
+              }
 
-                store.moviesLoading = false;
-                store.tvSeriesLoading = false;
-                if (store.searchedResults.movies.length === 0 && store.searchedResults.tv.length === 0) {
-                  console.log('vuoto');
-                  this.$router.push({ name: 'notFound' });
-                  return;
-                }
-              }, 500);
-            })
-            .catch((err) => {
-              setTimeout(() => {
-                //console.log(this.$route.name);
-                if (this.$route.name !== 'notFound') {
-                  this.$router.push({ name: 'notFound' });
-                }
-                ////console.log(this.hasChanged);
-                if (event) {
-                  this.hasChanged = false;
-                  store.loading = false;
-                }
+              store.loading = false;
 
-                store.moviesLoading = false;
-                store.tvSeriesLoading = false;
-              }, 500);
-            });
-        }
+              store.moviesLoading = false;
+              store.tvSeriesLoading = false;
+              if (store.searchedResults.movies.length === 0 && store.searchedResults.tv.length === 0) {
+                console.log('vuoto');
+                this.$router.push({ name: 'notFound' });
+                return;
+              }
+            }, 500);
+          })
+          .catch((err) => {
+            console.log(err);
+            setTimeout(() => {
+              this.emptySearchBar();
+              //console.log(this.$route.name);
+              if (this.$route.name !== 'notFound') {
+                this.$router.push({ name: 'notFound' });
+              }
+
+              store.loading = false;
+
+              store.moviesLoading = false;
+              store.tvSeriesLoading = false;
+            }, 500);
+          });
       }
     },
     openSearchbar() {
@@ -130,9 +119,7 @@ export default {
         return this.currentQuery;
       },
       set(newValue) {
-        this.hasChanged = true;
         this.currentQuery = newValue;
-        console.log(this.hasChanged);
       },
     },
   },
@@ -141,20 +128,20 @@ export default {
       this.scrollY = window.scrollY || window.pageYOffset;
     });
   },
+  mounted() {
+    console.log(window.localStorage?.getItem('queryString'));
+    if (window.localStorage?.getItem('queryString')) {
+      store.queryString = localStorage.getItem('queryString');
+    }
+  },
   watch: {
     $route(newValue) {
       //console.log(newValue);
+      if (newValue.name !== 'search' && newValue.name !== 'notFound') {
+        this.closeSearchBar();
+      }
       this.offCanvasNav = false;
       store.loading = true;
-      if (newValue.name === 'search') {
-        if (window.localStorage.getItem('queryString')) {
-          store.queryString = window.localStorage.getItem('queryString');
-          this.currentQuery = window.localStorage.getItem('queryString');
-        }
-        store.navbarFluid = true;
-      } else {
-        store.navbarFluid = false;
-      }
     },
     currentMoviesPage() {
       if (!store.loading) {
@@ -177,7 +164,11 @@ export default {
   <header id="site_header" class="py-2 w-100">
     <div class="background" :class="this.scrollY > 0 ? '' : 'opacity-0'"></div>
     <div class="container-fluid desktop-nav px-3 px-lg-5 justify-content-between align-items-center">
-      <div class="logo d-none d-lg-block"><img class="img-fluid" :src="store.getStaticImage('boolflix-logo.png')" alt="logo" /></div>
+      <div class="logo d-none d-lg-block">
+        <router-link aria-current="page" :to="{ name: 'home' }">
+          <img class="img-fluid" :src="store.getStaticImage('boolflix-logo.png')" alt="logo" />
+        </router-link>
+      </div>
       <nav class="navbar me-auto ps-lg-4">
         <router-link class="nav-link fw-semibold mx-3" :class="currentRouteName === 'home' ? 'active' : ''" aria-current="page" :to="{ name: 'home' }">Home</router-link>
         <router-link class="nav-link fw-semibold mx-3" :class="currentRouteName === 'movies' ? 'active' : ''" aria-current="page" :to="{ name: 'movies' }">Movies</router-link>
@@ -185,17 +176,22 @@ export default {
         <router-link class="nav-link fw-semibold mx-3" :class="currentRouteName === 'watchList' ? 'active' : ''" aria-current="page" :to="{ name: 'watchList' }">Watchlist</router-link>
       </nav>
       <div class="search d-flex align-items-center" :class="isSearchBarOpen ? 'open' : ''">
-        <font-awesome-icon v-if="!isSearchBarOpen" class="search-icon" @click="openSearchbar()" icon="fa-solid fa-magnifying-glass" />
+        <font-awesome-icon class="prova-icon invisible" icon="fa-solid fa-magnifying-glass" />
+        <font-awesome-icon class="search-icon" @click="search($event)" icon="fa-solid fa-magnifying-glass" />
         <font-awesome-icon v-if="isSearchBarOpen" @click="closeSearchBar()" class="close-icon" icon="fa-solid fa-xmark" />
         <div class="field position-relative">
-          <input type="text" id="searchbar" placeholder="Search..." autocomplete="off" v-model="queryString" @keyup.enter="search($event)" />
+          <input type="text" id="searchbar" placeholder="Search..." @keyup.enter="search($event)" autocomplete="off" v-model="queryString" />
           <font-awesome-icon v-if="currentQuery.length > 0 && isSearchBarOpen" @click="emptySearchBar()" class="clear-icon" icon="fa-solid fa-xmark" />
         </div>
       </div>
     </div>
     <div class="container-fluid burger-container">
       <div class="heading d-flex align-items-center">
-        <div class="logo"><img class="img-fluid" :src="store.getStaticImage('boolflix-logo.png')" alt="logo" /></div>
+        <div class="logo">
+          <router-link aria-current="page" :to="{ name: 'home' }">
+            <img class="img-fluid" :src="store.getStaticImage('boolflix-logo.png')" alt="logo" />
+          </router-link>
+        </div>
         <div class="burger" :class="offCanvasNav ? 'open' : ''" @click="toggleNav()">
           <div class="line"></div>
           <div class="line"></div>
@@ -218,11 +214,12 @@ export default {
           <router-link class="nav-link fw-semibold ms-2 my-3" :class="currentRouteName === 'movies' ? 'active' : ''" aria-current="page" :to="{ name: 'movies' }">Movies</router-link>
           <router-link class="nav-link fw-semibold ms-2 my-3" :class="currentRouteName === 'tvSeries' ? 'active' : ''" aria-current="page" :to="{ name: 'tvSeries' }">Tv Series</router-link>
           <router-link class="nav-link fw-semibold ms-2 my-3" :class="currentRouteName === 'watchList' ? 'active' : ''" aria-current="page" :to="{ name: 'watchList' }">Watchlist</router-link>
-          <div class="search d-flex align-items-center ms-2 my-3" :class="isSearchBarOpen ? 'open' : ''">
-            <font-awesome-icon v-if="!isSearchBarOpen" class="search-icon" @click="openSearchbar()" icon="fa-solid fa-magnifying-glass" />
+          <div class="search d-flex align-items-center ms-2" :class="isSearchBarOpen ? 'open' : ''">
+            <font-awesome-icon class="prova-icon invisible" icon="fa-solid fa-magnifying-glass" />
+            <font-awesome-icon class="search-icon" @click="search($event)" icon="fa-solid fa-magnifying-glass" />
             <font-awesome-icon v-if="isSearchBarOpen" @click="closeSearchBar()" class="close-icon" icon="fa-solid fa-xmark" />
             <div class="field position-relative">
-              <input type="text" id="searchbar" placeholder="Search..." autocomplete="off" v-model="queryString" @keyup.enter="search($event)" />
+              <input type="text" id="searchbar" placeholder="Search..." @keyup.enter="search($event)" autocomplete="off" v-model="queryString" />
               <font-awesome-icon v-if="currentQuery.length > 0 && isSearchBarOpen" @click="emptySearchBar()" class="clear-icon" icon="fa-solid fa-xmark" />
             </div>
           </div>
@@ -336,26 +333,44 @@ export default {
   top: 50%;
   width: 12px;
   height: 12px;
-  right: 24px;
+  right: 42px;
   translate: 0 -50%;
   &:hover {
     cursor: pointer;
   }
 }
 
-.search-icon,
 .close-icon {
+  position: absolute;
+}
+
+.search-icon,
+.close-icon,
+.prova-icon {
   color: $almost-white;
   width: 20px;
   cursor: pointer;
   height: 20px;
-  padding: 1rem;
-  position: relative;
+  padding: 0.5rem;
   transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.prova-icon {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  translate: 0 -50%;
 }
 
 .search {
-  box-shadow: 0 0 0 0 rgba(#000, 0.18);
+  border: 1px solid $almost-white;
+  backdrop-filter: blur(10px);
+  position: relative;
   transition: all 0.25s cubic-bezier(0.51, 0.92, 0.24, 1.15);
   .field {
     position: relative;
@@ -379,15 +394,16 @@ export default {
       &:focus {
         outline: none;
       }
+
       &::-webkit-input-placeholder {
         color: $almost-white;
       }
-      &:-moz-placeholder {
-        color: $almost-white;
-      }
+
       &::-moz-placeholder {
+        opacity: 1;
         color: $almost-white;
       }
+
       &:-ms-input-placeholder {
         color: $almost-white;
       }
@@ -396,9 +412,7 @@ export default {
 }
 
 .search.open {
-  border-radius: 8px;
   transition: all 0.25s cubic-bezier(0.51, 0.92, 0.24, 1.15);
-  box-shadow: 0 0 5px 5px rgba(#000, 0.18);
 
   .field {
     width: 200px;
@@ -471,17 +485,6 @@ export default {
   > * {
     transition: opacity 0.1s easee;
     opacity: 0;
-  }
-  .search.open {
-    border-radius: 0;
-  }
-  .search {
-    border: 1px solid $almost-white;
-
-    .search-icon,
-    .close-icon {
-      padding: 0.5rem;
-    }
   }
 }
 

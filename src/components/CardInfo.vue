@@ -529,14 +529,29 @@ export default {
 
 .volume-slider {
   overflow: hidden;
+  height: 10px;
   width: 80px;
   -webkit-appearance: none;
   appearance: none;
   background-color: $secondary;
 }
+.volume-slider::-moz-range-progress {
+  background-color: #80141b;
+  height: 10px;
+}
+.volume-slider::-moz-range-track {
+  background-color: $secondary;
+}
+/* IE*/
+.volume-slider::-ms-fill-lower {
+  background-color: #80141b;
+  height: 10px;
+}
+.volume-slider::-ms-fill-upper {
+  background-color: $secondary;
+}
 
 .volume-slider::-webkit-slider-runnable-track {
-  height: 10px;
   -webkit-appearance: none;
   color: $primary;
   margin-top: -1px;
@@ -545,11 +560,43 @@ export default {
 .volume-slider::-webkit-slider-thumb {
   width: 10px;
   -webkit-appearance: none;
+  appearance: none;
   height: 10px;
   cursor: pointer;
   background: #636363;
   box-shadow: -80px 0 0 80px #80141b;
-  transition: background 0.25s ease;
+  transition: background-color 0.25s ease;
+}
+
+.volume-slider::-moz-range-thumb {
+  -moz-appearance: none;
+  display: block;
+  width: 10px;
+  appearance: none;
+  height: 10px;
+  cursor: pointer;
+  background: #636363;
+  border: none;
+  border-radius: 0px;
+  transition: background-color 0.25s ease;
+}
+.volume-slider::-ms-thumb {
+  -ms-appearance: none;
+  width: 10px;
+  appearance: none;
+  height: 10px;
+  cursor: pointer;
+  background: #636363;
+  border: none;
+  border-radius: 0px;
+  transition: background-color 0.25s ease;
+}
+
+.volume-slider::-ms-thumb:hover {
+  background: $almost-white;
+}
+.volume-slider::-moz-range-thumb:hover {
+  background: $almost-white;
 }
 
 .volume-slider::-webkit-slider-thumb:hover {

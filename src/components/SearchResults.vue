@@ -134,7 +134,7 @@ export default {
   height: 80px;
   border-radius: 50%;
   display: inline-block;
-  border-top: 3px solid $darker-red;
+  border-top: 3px solid $primary;
   border-right: 3px solid transparent;
   box-sizing: border-box;
   animation: rotation 1s linear infinite;
