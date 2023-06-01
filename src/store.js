@@ -147,7 +147,8 @@ export let store = reactive({
   async getTrendingTopTen(key) {
     try {
       const response = await this.getTrending(key);
-      this[key].trendingTopTen = response.data.results.filter((_, index) => index < 10).map((item) => item.id);
+      //An item must have to image to be displayed in the page
+      this[key].trendingTopTen = response.data.results.filter((item, index) => index < 10 && item.poster_path !== null).map((item) => item.id);
       console.log('trending top ten');
     } catch (err) {
       console.log(err.message);
@@ -161,10 +162,13 @@ export let store = reactive({
       const response = await Promise.all([this.getTrending(key), this.getPopular(key)]);
       const randomIndex = Math.floor(Math.random() * 10);
       //this.shuffle(response[0].data.results)
-      this.trendingResult = response[0].data.results[randomIndex];
+      //An item must have to image to be displayed in the page
+      const filteredTrending = response[0].data.results.filter((item) => item.poster_path !== null);
+      const filteredPopular = response[1].data.results.filter((item) => item.poster_path !== null);
+      this.trendingResult = filteredTrending[randomIndex];
       this.trendingResultIndex = randomIndex;
-      this.results.trending = this.shuffle(response[0].data.results);
-      this.results.popular = response[1].data.results;
+      this.results.trending = this.shuffle(filteredTrending);
+      this.results.popular = filteredPopular;
 
       //Getting trending details and logo
       this.trendingDetails = await axios.get(this.API_URL + `/${key}/${this.trendingResult.id}?api_key=${this.API_KEY}&append_to_response=images`);

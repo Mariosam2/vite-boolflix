@@ -87,7 +87,7 @@ export default {
 };
 </script>
 <template>
-  <div class="results row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4">
+  <div class="results row row-cols-1 row-cols-sm-2 row-cols-lg-4">
     <card-item
       :class="!store[`${itemsKey}Loading`] ? 'opacity-100' : 'opacity-0'"
       :ref="`card-item-${item.id}`"
@@ -97,21 +97,23 @@ export default {
       :item="item"></card-item>
     <div v-if="store[`${itemsKey}Loading`]" class="loader"></div>
   </div>
-  <div class="pagination d-flex justify-content-center align-items-center mt-4" v-if="totalPages > 1">
-    <font-awesome-icon @click="prevPage(itemsKey)" id="prevMoviesIcon" class="fs-5 fw-bold mx-3" icon="fa-solid fa-chevron-left" />
-    <div v-for="index in totalPages">
-      <div class="page" :class="index === currentPage ? 'current' : ''" v-if="index === currentPage">
-        {{ index }}
+  <div class="pagination d-flex justify-content-center mt-2 flex-wrap" v-if="totalPages > 1">
+    <div class="pagination d-flex flex-nowrap align-items-center my-3">
+      <font-awesome-icon @click="prevPage(itemsKey)" id="prevMoviesIcon" class="fs-5 fw-bold mx-3" icon="fa-solid fa-chevron-left" />
+      <div v-for="index in totalPages">
+        <div class="page" :class="index === currentPage ? 'current' : ''" v-if="index === currentPage">
+          {{ index }}
+        </div>
       </div>
-    </div>
-    <div class="d-flex align-items-baseline">
-      <span class="mx-2">...</span>
-      <div class="page">
-        {{ totalPages }}
+      <div class="d-flex align-items-baseline">
+        <span class="mx-2">...</span>
+        <div class="page">
+          {{ totalPages }}
+        </div>
       </div>
+      <font-awesome-icon @click="nextPage(itemsKey)" id="nextMoviesIcon" class="fs-5 fw-bold mx-3" icon="fa-solid fa-chevron-right" />
     </div>
-    <font-awesome-icon @click="nextPage(itemsKey)" id="nextMoviesIcon" class="fs-5 fw-bold mx-3" icon="fa-solid fa-chevron-right" />
-    <div>
+    <div class="go-to-page d-flex flex-nowrap align-items-center my-3">
       <span class="me-3">Go to page</span>
       <input type="number" name="page" id="goToPage" min="1" :max="totalPages" @keydown="checkInvalidChars($event)" v-model="toPage" @keyup.enter="goToPage(itemsKey)" />
     </div>

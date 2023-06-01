@@ -27,7 +27,29 @@ export default {
       renderMode: 'performance',
       dragSpeed: 0.8,
       slides: {
-        perView: 6,
+        perView: 1,
+      },
+      breakpoints: {
+        '(min-width: 400px)': {
+          slides: {
+            perView: 2,
+          },
+        },
+        '(min-width: 586px)': {
+          slides: {
+            perView: 3,
+          },
+        },
+        '(min-width: 992px)': {
+          slides: {
+            perView: 4,
+          },
+        },
+        '(min-width: 1440px)': {
+          slides: {
+            perView: 6,
+          },
+        },
       },
     });
   },

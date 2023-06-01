@@ -28,8 +28,9 @@ export default {
     async getUpcomingAndTopRated() {
       try {
         const response = await Promise.all([store.getUpcomingMovies(), store.getTopRatedMovies()]);
-        this.upComingMovies = response[0].data?.results.filter((item) => item.backdrop_path !== null);
-        this.topRatedMovies = response[1].data?.results.filter((_, index) => index < 10);
+        //An item must have to image to be displayed in the page
+        this.upComingMovies = response[0].data?.results.filter((item) => item.poster_path !== null);
+        this.topRatedMovies = response[1].data?.results.filter((item, index) => index < 10 && item.poster_path !== null);
         //console.log(this.topRatedMovies);
         setTimeout(() => {
           store.loading = false;
@@ -91,7 +92,7 @@ export default {
 <template>
   <main id="site_main" class="min-vh-100 home">
     <div class="layover"></div>
-    <div class="container-fluid upcoming pb-3 pb-md-5 px-0 opacity-0" :class="upComingMovies ? 'opacity-100' : ''">
+    <div class="container-fluid upcoming pt-4 pb-3 pb-md-5 px-0 opacity-0" :class="upComingMovies ? 'opacity-100' : ''">
       <h2 class="home-title ms_white">Upcoming</h2>
 
       <div v-if="upComingMovies" class="slider-wrapper">
@@ -146,6 +147,7 @@ export default {
 <style lang="scss" scoped>
 @use '../assets/scss/partials/variables' as *;
 main {
+  padding-top: 5rem;
   background: linear-gradient(to bottom, rgba(black, 1), transparent, rgba(black, 1)), url(../assets/img/home-top.jpg) no-repeat top, url(../assets/img/home-bottom.jpg) no-repeat bottom;
   background-size: 100% 50%;
   .layover {
@@ -156,13 +158,6 @@ main {
     bottom: 0;
     background-color: rgba($color: #000000, $alpha: 0.5);
     z-index: 1;
-  }
-
-  .upcoming {
-    padding-top: 5rem;
-    @media screen and (min-width: 540px) {
-      padding-top: 8rem;
-    }
   }
 
   .slider-wrapper {

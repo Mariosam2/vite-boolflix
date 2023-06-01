@@ -50,15 +50,15 @@ export default {
 </script>
 
 <template>
-  <main class="movies-tv-series min-vh-100 px-5 pb-5" v-if="store.homeResults">
+  <main class="movies-tv-series min-vh-100 px-0 px-sm-3 px-lg-5 pb-5" v-if="store.homeResults">
     <div class="layover"></div>
-    <div class="container-fluid px-5 px-md-3 px-xl-0 ps-xl-3 position-relative">
-      <div class="trending-content pt-5 pb-5">
+    <div class="container-fluid ps-xl-3 position-relative">
+      <div class="trending-content py-4">
         <div class="heading">
           <img @load="logoLoaded($event)" class="trending-logo py-2" v-if="store.trendingLogo" :src="'https://image.tmdb.org/t/p/w780/' + store.trendingLogo" alt="" />
           <h1 v-else class="m-0">{{ store.trendingResult.title || store.trendingResult.name }}</h1>
         </div>
-        <div class="trending-top d-flex align-items-center my-3 p-2 noto_sans">
+        <div class="trending-top d-none d-md-flex align-items-center my-3 p-2 noto_sans">
           <span class="fw-bold fs-4 text-uppercase pe-2">
             {{ `${store.trendingResultIndex + 1}°` }}
           </span>
@@ -67,11 +67,20 @@ export default {
             24h
           </small>
         </div>
-        <div class="cta d-flex align-items-center mt-3 mb-1">
-          <h1 class="b-logo mb-0 ps-0">B</h1>
-          <div class="info_btn d-flex align-items-center" @click="onInfoClick(store.trendingResult.id)">
+        <div class="cta d-flex align-items-center mt-3 mb-2 mb-md-1">
+          <h1 class="b-logo mb-0 ps-0 d-none d-md-block">B</h1>
+          <div class="info_btn d-flex align-items-center ms-1 ms-md-0" @click="onInfoClick(store.trendingResult.id)">
             <font-awesome-icon class="icon pe-2 fs-5" icon="fa-solid fa-circle-info" />
             More info
+          </div>
+          <div class="trending-top d-flex d-md-none align-items-center ms-3 p-2 noto_sans">
+            <span class="fw-bold fs-4 text-uppercase pe-2">
+              {{ `${store.trendingResultIndex + 1}°` }}
+            </span>
+            <small>
+              <font-awesome-icon icon="fa-solid fa-chart-simple" />
+              24h
+            </small>
           </div>
         </div>
 
@@ -81,7 +90,7 @@ export default {
     </div>
 
     <img v-if="store.trendingResult !== null" :src="store.ORIGINAL_IMAGE_API_URL + store.trendingResult.backdrop_path" alt="" class="bg-thumb" />
-    <div v-if="store.homeResults" class="px-5 px-md-3 px-xl-0 pb-3 d-flex flex-wrap align-items-center ms_container">
+    <div v-if="store.homeResults" class="pb-3 d-flex flex-wrap align-items-center ms_container">
       <cards-items v-for="(items, trendingOrPopular) in store.results" :items="items" :movieOrTvKey="this.movieOrTvKey" :trendingOrPopularKey="trendingOrPopular"></cards-items>
     </div>
   </main>
@@ -91,7 +100,7 @@ export default {
 @use '../assets/scss/partials/variables' as *;
 
 main.movies-tv-series {
-  padding-top: 4rem;
+  padding-top: 5rem;
   background: linear-gradient(to bottom, transparent 50%, $secondary 70%);
 }
 
@@ -115,13 +124,21 @@ main.movies-tv-series {
 .trending-content {
   position: relative;
   color: $almost-white;
-  max-width: 40%;
+  max-width: 100%;
+
+  @media screen and (min-width: 768px) {
+    max-width: 60%;
+  }
+
+  @media screen and (min-width: 992px) {
+    max-width: 40%;
+  }
 }
 
 .trending-logo {
   width: auto;
-  max-width: 100%;
-  min-height: 150px;
+  width: 100%;
+  max-width: 400px;
   max-height: 350px;
   object-fit: contain;
 }

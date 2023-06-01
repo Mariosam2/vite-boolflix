@@ -24,13 +24,13 @@ export default {
 </script>
 <template>
   <main class="min-vh-100 bg_secondary" id="site_main">
-    <div class="container-fluid px-5 pb-4" v-if="store.watchList.length > 0">
+    <div class="container-fluid px-3 px-md-5 py-4" v-if="store.watchList.length > 0">
       <h2 class="ms_white mb-0">My Watchlist</h2>
-      <div class="row row-cols-4">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4">
         <card-item class="squared watchlist" v-for="result in store.watchList" :item="result.item" :movieOrTvKey="result.key" />
       </div>
     </div>
-    <div class="empty-watchlist d-flex flex-column align-items-center ms_white" v-else>
+    <div class="empty-watchlist d-flex flex-column align-items-center ms_white px-3" v-else>
       <font-awesome-icon class="empty-icon" icon="fa-solid fa-circle-plus" />
       <h2 class="mb-0 pt-4 pb-3">Your watchlist is empty</h2>
       <p>Add movies and shows to your watchlist to keep track of what you want to watch</p>
@@ -41,12 +41,12 @@ export default {
 <style lang="scss" scoped>
 @use '../assets/scss/partials/variables' as *;
 main {
-  .container-fluid {
-    padding-top: 8rem;
-  }
+  padding-top: 5rem;
+
   .empty-watchlist {
     text-align: center;
     max-width: 320px;
+    width: 100%;
     position: absolute;
     top: 50%;
     left: 50%;

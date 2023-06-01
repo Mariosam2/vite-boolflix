@@ -58,7 +58,7 @@ export default {
               /* console.log(resp[0].data, resp[1].data); */
               window.localStorage.setItem('currentPages', JSON.stringify({ movies: store.currentMoviesPage, tv: store.currentTvSeriesPage }));
               window.localStorage.setItem('totalPages', JSON.stringify({ movies: store.searchedMoviesTotalPages, tv: store.searchedTvSeriesTotalPages }));
-
+              this.offCanvasNav = false;
               setTimeout(() => {
                 //console.log(this.$route.name);
                 if (this.$route.name !== 'search') {
@@ -144,7 +144,7 @@ export default {
   watch: {
     $route(newValue) {
       //console.log(newValue);
-
+      this.offCanvasNav = false;
       store.loading = true;
       if (newValue.name === 'search') {
         if (window.localStorage.getItem('queryString')) {
@@ -174,11 +174,11 @@ export default {
 </script>
 
 <template>
-  <header id="site_header" class="py-sm-2 w-100">
-    <div class="background d-none d-sm-block" :class="this.scrollY > 0 ? '' : 'opacity-0'"></div>
-    <div class="container-fluid d-none d-sm-flex px-3 px-md-5 justify-content-between align-items-center">
-      <div class="logo d-none d-md-block"><img class="img-fluid" :src="store.getStaticImage('boolflix-logo.png')" alt="logo" /></div>
-      <nav class="navbar me-auto ps-md-4">
+  <header id="site_header" class="py-2 w-100">
+    <div class="background" :class="this.scrollY > 0 ? '' : 'opacity-0'"></div>
+    <div class="container-fluid desktop-nav px-3 px-lg-5 justify-content-between align-items-center">
+      <div class="logo d-none d-lg-block"><img class="img-fluid" :src="store.getStaticImage('boolflix-logo.png')" alt="logo" /></div>
+      <nav class="navbar me-auto ps-lg-4">
         <router-link class="nav-link fw-semibold mx-3" :class="currentRouteName === 'home' ? 'active' : ''" aria-current="page" :to="{ name: 'home' }">Home</router-link>
         <router-link class="nav-link fw-semibold mx-3" :class="currentRouteName === 'movies' ? 'active' : ''" aria-current="page" :to="{ name: 'movies' }">Movies</router-link>
         <router-link class="nav-link fw-semibold mx-3" :class="currentRouteName === 'tvSeries' ? 'active' : ''" aria-current="page" :to="{ name: 'tvSeries' }">Tv Series</router-link>
@@ -193,9 +193,9 @@ export default {
         </div>
       </div>
     </div>
-    <div class="container-fluid pt-3 d-sm-none">
+    <div class="container-fluid burger-container">
       <div class="heading d-flex align-items-center">
-        <div class="logo invisible"><img class="img-fluid" :src="store.getStaticImage('boolflix-logo.png')" alt="logo" /></div>
+        <div class="logo"><img class="img-fluid" :src="store.getStaticImage('boolflix-logo.png')" alt="logo" /></div>
         <div class="burger" :class="offCanvasNav ? 'open' : ''" @click="toggleNav()">
           <div class="line"></div>
           <div class="line"></div>
@@ -203,12 +203,17 @@ export default {
         </div>
       </div>
     </div>
-    <div class="off-canvas-nav d-sm-none py-3" :class="offCanvasNav ? 'open' : ''">
+    <div class="off-canvas-nav" :class="offCanvasNav ? 'open' : ''">
       <div class="container-fluid">
-        <div class="heading d-flex align-items-center">
-          <div class="logo"><img class="img-fluid" :src="store.getStaticImage('boolflix-logo.png')" alt="logo" /></div>
+        <div class="heading d-flex align-items-center py-2">
+          <div class="logo invisible"><img class="img-fluid" :src="store.getStaticImage('boolflix-logo.png')" alt="logo" /></div>
+          <div class="burger invisible">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
+          </div>
         </div>
-        <nav class="navbar me-auto ps-md-4 d-flex flex-column align-items-start">
+        <nav class="navbar me-auto d-flex flex-column align-items-start py-0">
           <router-link class="nav-link fw-semibold ms-2 my-3" :class="currentRouteName === 'home' ? 'active' : ''" aria-current="page" :to="{ name: 'home' }">Home</router-link>
           <router-link class="nav-link fw-semibold ms-2 my-3" :class="currentRouteName === 'movies' ? 'active' : ''" aria-current="page" :to="{ name: 'movies' }">Movies</router-link>
           <router-link class="nav-link fw-semibold ms-2 my-3" :class="currentRouteName === 'tvSeries' ? 'active' : ''" aria-current="page" :to="{ name: 'tvSeries' }">Tv Series</router-link>
@@ -232,18 +237,28 @@ export default {
 
 #site_header {
   position: absolute;
+  @media screen and (min-width: 660px) {
+    position: fixed;
+  }
 
   top: 0;
   z-index: 4;
-  .container-fluid,
-  .container-xl {
+  .container-fluid.desktop-nav {
+    display: none;
     transition: all 0.25s ease;
+    @media screen and (min-width: 660px) {
+      display: flex;
+    }
   }
 }
 
 #site_header .background {
   transition: opacity 0.25s ease;
   z-index: -1;
+  display: none;
+  @media screen and (min-width: 660px) {
+    display: block;
+  }
 }
 
 #site_header .background {
@@ -260,6 +275,7 @@ export default {
 .logo {
   width: 120px;
   height: auto;
+  z-index: 6;
 }
 
 .navbar {
@@ -340,11 +356,11 @@ export default {
 
 .search {
   box-shadow: 0 0 0 0 rgba(#000, 0.18);
-  transition: all 0.5s cubic-bezier(0.51, 0.92, 0.24, 1.15);
+  transition: all 0.25s cubic-bezier(0.51, 0.92, 0.24, 1.15);
   .field {
     position: relative;
     width: 0;
-    transition: all 0.5s cubic-bezier(0.51, 0.92, 0.24, 1.15);
+    transition: all 0.25s cubic-bezier(0.51, 0.92, 0.24, 1.15);
     input {
       color: $almost-white;
       padding: 0.5rem;
@@ -381,7 +397,7 @@ export default {
 
 .search.open {
   border-radius: 8px;
-  transition: all 0.5s cubic-bezier(0.51, 0.92, 0.24, 1.15);
+  transition: all 0.25s cubic-bezier(0.51, 0.92, 0.24, 1.15);
   box-shadow: 0 0 5px 5px rgba(#000, 0.18);
 
   .field {
@@ -389,6 +405,13 @@ export default {
     input {
       display: block;
     }
+  }
+}
+
+.burger-container {
+  display: block;
+  @media screen and (min-width: 660px) {
+    display: none;
   }
 }
 
@@ -442,6 +465,9 @@ export default {
   transform: scaleX(0);
   transform-origin: right;
   transition: all 0.25s ease;
+  @media screen and (min-width: 660px) {
+    display: none;
+  }
   > * {
     transition: opacity 0.1s easee;
     opacity: 0;

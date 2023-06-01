@@ -61,7 +61,7 @@ export default {
   aspect-ratio: 4/3;
 }
 .squared {
-  padding: 0.75rem;
+  padding: 1rem;
   @media screen and (min-width: 1200px) {
     padding: 1.5rem;
   }
@@ -95,9 +95,10 @@ export default {
   aspect-ratio: 2/3;
   scale: 1;
   transition: scale 0.2s ease;
-
-  &:hover {
-    scale: 1.08;
+  @media screen and (min-width: 1440px) {
+    &:hover {
+      scale: 1.08;
+    }
   }
 
   .card_img {

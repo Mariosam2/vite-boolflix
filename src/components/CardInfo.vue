@@ -71,13 +71,16 @@ export default {
       //Not sure about this, I saw that some videos are not "autoplayable"
       //It's just to make sure the video is starting
       //state 1 means "playing"
+      //Autoplay is not working for mobile
       if (this.player.getPlayerState() !== 1) {
         this.player.playVideo();
       }
     },
     onPlayerStateChange() {
       // console.log("Player state changed", this.player.getPlayerState());
-
+      if (this.player.getPlayerState() !== 1 && this.player.getPlayerState() !== 0) {
+        this.player.playVideo();
+      }
       if (this.player.getPlayerState() === 0) {
         //state 0 means "ended"
         this.player.destroy();
@@ -255,7 +258,7 @@ export default {
   <!--  -->
   <Teleport to="#item-popup">
     <div v-if="store.infosVisible" class="outer-layover" @click="closeInfos(item.id)"></div>
-    <div class="ms_white" :class="item.backdrop_path || this.trailer ? 'h-600' : 'h-content'" v-if="item !== null && item !== undefined" :id="'card-info-' + item.id">
+    <div class="ms_white" :class="item.backdrop_path || this.trailer ? 'h-full' : 'h-content'" v-if="item !== null && item !== undefined" :id="'card-info-' + item.id">
       <div class="card preview-card border-0 rounded-0" :class="item.backdrop_path || this.trailer ? 'gradient' : 'full p-3 pt-4'">
         <div v-if="item.backdrop_path || this.trailer" class="preview">
           <font-awesome-icon @click="closeInfos(item.id)" class="close-icon m-2 p-1" icon="fa-solid fa-xmark" />
@@ -264,10 +267,10 @@ export default {
           <div class="video">
             <div :id="'player-' + item.id"></div>
           </div>
-          <div class="item-logo p-3">
+          <div class="item-logo px-2 py-3 p-sm-3">
             <img v-if="logo" :src="store.LOGO_IMAGE_API_URL + this.logo" alt="" />
           </div>
-          <div class="controls d-flex align-items-center justify-content-end p-3">
+          <div class="controls d-flex align-items-center justify-content-end px-2 py-3 p-sm-3">
             <div v-if="isPlayerReady" class="volume d-flex align-items-center">
               <div class="switch-mute" @click="switchMute()">
                 <div class="volume-icon">
@@ -284,9 +287,9 @@ export default {
           </div>
         </div>
 
-        <div class="content p-3 pb-4">
-          <div class="card_top d-flex pb-3">
-            <div v-if="(trailer !== null && trailer !== undefined) || this.$route.name !== 'watchList'" class="cta-buttons d-flex align-items-center pe-3">
+        <div class="content px-3 pb-4">
+          <div class="card_top d-flex flex-wrap">
+            <div v-if="(trailer !== null && trailer !== undefined) || this.$route.name !== 'watchList'" class="cta-buttons d-flex align-items-center pe-3 pt-3">
               <a v-if="trailer !== null && trailer !== undefined" class="trailer_btn" :href="'https://www.youtube.com/watch?v=' + trailer.key" target="_blank">
                 Trailer
                 <font-awesome-icon class="cta-icon ms-1" icon="fa-solid fa-arrow-up-right-from-square" />
@@ -296,7 +299,7 @@ export default {
                 Watchlist
               </div>
             </div>
-            <div class="details d-flex align-items-center flex-grow-1">
+            <div class="details d-flex align-items-center flex-grow-1 pt-3">
               <span v-if="item.release_date" class="release_date me-1">
                 {{ new Date(item.release_date).toLocaleDateString('en-US', dateOptions) }}
               </span>
@@ -311,7 +314,7 @@ export default {
               </div>
             </div>
           </div>
-          <div v-if="item.vote_average > 0" class="rating text-success fw-bold border-sucess">
+          <div v-if="item.vote_average > 0" class="rating text-success fw-bold border-sucess pt-3">
             <span>
               {{ parseInt(item.vote_average * 10) + '% ' + 'positive rating' }}
             </span>
@@ -395,8 +398,12 @@ export default {
   will-change: transform;
 }
 
-[id*='card-info'].h-600 {
+[id*='card-info'].h-full {
   height: 600px;
+
+  @media screen and (min-width: 1920px) {
+    height: 800px;
+  }
 }
 
 [id*='card-info'].h-content {
@@ -414,12 +421,21 @@ export default {
 }
 
 .preview-card {
+  width: 100vw;
+  @media screen and (min-width: 586px) {
+    width: 586px;
+  }
   position: relative;
-  width: 586px;
+  @media screen and (min-width: 1920px) {
+    width: 1040px;
+  }
 }
 
 .preview-card.gradient {
   background: linear-gradient(to bottom, transparent 300px, $secondary 300px);
+  @media screen and (min-width: 1920px) {
+    background: linear-gradient(to bottom, transparent 500px, $secondary 500px);
+  }
 }
 .preview-card.full {
   background-color: $secondary;
@@ -428,7 +444,13 @@ export default {
 .preview {
   position: relative;
   width: 100%;
+  position: relative;
   height: 300px;
+
+  @media screen and (min-width: 1920px) {
+    height: 500px;
+  }
+
   overflow: hidden;
 }
 
@@ -456,12 +478,20 @@ export default {
 
 .video {
   position: absolute;
-  width: 220%;
-  height: 150%;
+  width: 230%;
+  height: 170%;
   top: 50%;
   left: 50%;
   translate: -50% -50%;
   z-index: -1;
+  @media screen and (min-width: 586px) {
+    width: 220%;
+    height: 150%;
+  }
+  @media screen and (min-width: 1920px) {
+    width: 135%;
+    height: 135%;
+  }
 }
 
 .item-logo {
