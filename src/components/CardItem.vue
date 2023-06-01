@@ -42,12 +42,12 @@ export default {
 
 <template>
   <div v-if="item && store[movieOrTvKey]" class="col" :class="store[movieOrTvKey].trendingTopTen.length > 0 && store[movieOrTvKey].trendingTopTen.includes(item.id) ? 'trending-item' : ''">
-    <div class="ms_card">
+    <div :data-id="item.id" class="ms_card" @click="onInfoClick">
       <div class="layover"></div>
       <img class="card_img" :src="store.SMALLER_IMAGE_API_URL + item.poster_path" alt="" />
       <!-- :data-splide-lazy="store.SMALLER_IMAGE_API_URL + item.poster_path" -->
       <div class="d-flex">
-        <font-awesome-icon @click="onInfoClick" :data-id="item.id" class="p-2 info-icon" icon="fa-solid fa-circle-info" />
+        <font-awesome-icon class="p-2 info-icon" icon="fa-solid fa-circle-info" />
         <font-awesome-icon @click="removeToWatchList()" v-if="this.$route.name === 'watchList'" class="remove-icon m-2 p-1 ms-auto" icon="fa-solid fa-xmark" />
       </div>
       <card-info v-if="this.itemInfosDisplay" @closePopup="this.itemInfosDisplay = $event" :movieOrTvKey="this.movieOrTvKey" :item="item" :trailer="store.trailer" />
@@ -89,6 +89,7 @@ export default {
   aspect-ratio: 2/3;
   scale: 1;
   transition: scale 0.2s ease;
+  cursor: pointer;
   @media screen and (min-width: 1440px) {
     &:hover {
       scale: 1.08;
@@ -154,14 +155,15 @@ export default {
   height: 25px;
 }
 
+.remove-icon {
+  cursor: pointer;
+}
+
 .info-icon,
 .remove-icon {
   position: relative;
   z-index: 3;
   color: $almost-white;
-  &:hover {
-    cursor: pointer;
-  }
 }
 .remove-icon {
   width: 20px;
