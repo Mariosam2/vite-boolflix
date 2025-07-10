@@ -25,13 +25,13 @@ export default {
       return valutation;
     },
     onInfoClick(evt) {
+      
       this.itemInfosDisplay = true;
       const currentId = evt.currentTarget.getAttribute('data-id');
       store.mountInfos(currentId, this.movieOrTvKey);
     },
     removeToWatchList() {
       const watchListItems = store.watchList.map((result) => result.item);
-      document.body.classList.remove('noscroll');
       const itemIndex = watchListItems.indexOf(this.item);
       console.log(itemIndex);
       store.watchList.splice(itemIndex, 1);
@@ -49,7 +49,7 @@ export default {
       <!-- :data-splide-lazy="store.SMALLER_IMAGE_API_URL + item.poster_path" -->
       <div class="d-flex">
         <font-awesome-icon class="p-2 info-icon" icon="fa-solid fa-circle-info" />
-        <font-awesome-icon @click="removeToWatchList()" v-if="this.$route.name === 'watchList'" class="remove-icon m-2 p-1 ms-auto" icon="fa-solid fa-xmark" />
+        <font-awesome-icon @click.stop="removeToWatchList()" v-if="this.$route.name === 'watchList'" class="remove-icon m-2 p-1 ms-auto" icon="fa-solid fa-xmark" />
       </div>
       <card-info v-if="this.itemInfosDisplay" @closePopup="this.itemInfosDisplay = $event" :movieOrTvKey="this.movieOrTvKey" :item="item" :trailer="store.trailer" />
     </div>
