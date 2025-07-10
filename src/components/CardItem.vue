@@ -31,6 +31,7 @@ export default {
     },
     removeToWatchList() {
       const watchListItems = store.watchList.map((result) => result.item);
+      document.body.classList.remove('noscroll');
       const itemIndex = watchListItems.indexOf(this.item);
       console.log(itemIndex);
       store.watchList.splice(itemIndex, 1);
